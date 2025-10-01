@@ -9,6 +9,10 @@ import RequestGymCTA from "./Home/RequestGymCTA"
 import SignInForm from "./Forms/LoginComponent"
 import Logo from "./Buttons/Logo"
 import SignUpForm from "./Forms/RegisterComponent"
+import GymListings from "./GymListings/GymListings"
+import LandingPageNav from "./NavBars/LandingPageNav"
+import PaginationStatic from "./Pagination/PaginationStatic"
+
 export {
     Header,
     DarkModeToggle,
@@ -20,6 +24,9 @@ export {
     RequestGymCTA,
     SignInForm,
     Logo,
-    SignUpForm
+    SignUpForm,
+    GymListings
+    , LandingPageNav,
+    PaginationStatic
 
 }

@@ -12,7 +12,7 @@ export interface MembershipPlan {
 }
 
 export interface Gym {
-  id: string; // changed to string to match your dummy data
+  id: string; // unique identifier
   name: string;
   slug: string;
   address: Address;
@@ -25,50 +25,62 @@ export interface Gym {
   reviewCount: number;
   type: string; // e.g., "Gym", "Yoga", "CrossFit"
   genderSegregated?: string; // e.g., "Male", "Female", "Co-ed"
+  equipment: EquipmentCategory[]; // new field
+}
+export interface EquipmentCategory {
+  category: string; // e.g., "Cardio", "Strength"
+  items: string[];  // e.g., ["Treadmills", "Dumbbells", "Rowing Machines"]
 }
 
+
 export const dummyGyms: Gym[] = [
-  {
-    id: "g1",
-    name: "Iron Paradise Fitness",
-    slug: "iron-paradise-fitness",
-    address: {
-      line1: "23 MG Road",
-      city: "Bengaluru",
-      state: "Karnataka",
-      pincode: "560001",
-    },
-    phone: "+91-9876543210",
-    hours: "6:00 AM – 10:00 PM",
-    amenities: [
-      "Cardio Equipment",
-      "Weightlifting Zone",
-      "Personal Training",
-      "Steam Room",
-      "Nutrition Consultation",
-    ],
-    membershipPlans: [
-      {
-        type: "Monthly",
-        pricePerMonth: 2500,
-        perks: ["Unlimited access", "Locker", "1 PT session"],
-      },
-      {
-        type: "Annual",
-        pricePerMonth: 2000,
-        perks: ["Unlimited access", "Free diet chart", "4 PT sessions"],
-      },
-    ],
-    images: [
-      "https://www.workoutforless.co.uk/cdn/shop/articles/luis-reyes-mTorQ9gFfOg-unsplash_2_640x.jpg?v=1657122621"
-      ,
-      "https://youfit.com/wp-content/uploads/2022/09/cardio-workouts-at-the-gym.png",
-    ],
-    avgRating: 4.5,
-    reviewCount: 3,
-    type: "Gym",
-    genderSegregated: "Co-ed",
+ {
+  id: "g1",
+  name: "Iron Paradise Fitness",
+  slug: "iron-paradise-fitness",
+  address: {
+    line1: "23 MG Road",
+    city: "Bengaluru",
+    state: "Karnataka",
+    pincode: "560001",
   },
+  phone: "+91-9876543210",
+  hours: "6:00 AM – 10:00 PM",
+  amenities: [
+    "Cardio Equipment",
+    "Weightlifting Zone",
+    "Personal Training",
+    "Steam Room",
+    "Nutrition Consultation",
+  ],
+  membershipPlans: [
+    {
+      type: "Monthly",
+      pricePerMonth: 2500,
+      perks: ["Unlimited access", "Locker", "1 PT session"],
+    },
+    {
+      type: "Annual",
+      pricePerMonth: 2000,
+      perks: ["Unlimited access", "Free diet chart", "4 PT sessions"],
+    },
+  ],
+  equipment: [
+    { category: "Cardio", items: ["Treadmills", "Ellipticals", "Rowing Machines"] },
+    { category: "Strength", items: ["Bench Press", "Squat Rack", "Dumbbells (2kg–50kg)"] },
+    { category: "Functional Training", items: ["Battle Ropes", "Kettlebells", "Medicine Balls"] },
+    { category: "Machines", items: ["Leg Press", "Lat Pulldown", "Chest Fly Machine"] },
+  ],
+  images: [
+    "https://www.workoutforless.co.uk/cdn/shop/articles/luis-reyes-mTorQ9gFfOg-unsplash_2_640x.jpg?v=1657122621",
+    "https://youfit.com/wp-content/uploads/2022/09/cardio-workouts-at-the-gym.png",
+  ],
+  avgRating: 4.5,
+  reviewCount: 3,
+  type: "Gym",
+  genderSegregated: "Co-ed",
+}
+,
   {
     id: "g2",
     name: "Flex & Flow Studio",
