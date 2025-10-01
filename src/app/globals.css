@@ -1,26 +1,64 @@
 @import "tailwindcss";
+@import "tw-animate-css";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+@theme {
+  --color-*: initial;
+  --color-primary: #e5e5e5  ;
+  --color-secondary: #0077b6;
+  --color-accent: #fbfff1;
+  --color-black: #000000;
+  --color-white:#ffffff;
+  --color-background: #090c9b;
+  --color-overlay:#000000;
+  --color-inverted:#ffffff;
+  --color-yellow: #FFFF00;
+  --color-gray: #736F73;
+  --color-red: #FF0000;
+
+}
+.dark {
+  --color-primary: #023047;
+  --color-secondary: #507a95;
+  --color-accent: #1e1f23;
+  --color-black: #ffffff;
+   --color-inverted:#000000;
+    --color-gray: #ffffff;
+  
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+
+.hero-heading{
+  @apply mb-5 font-sans text-6xl font-bold tracking-tight text-white ;
+}
+.hero-text{
+  @apply pr-5 mb-5 text-2xl text-white  font-light;
+}
+.section-text{
+  @apply pr-5 mb-5 text-lg text-black  font-semibold ;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+
+.section-heading{
+  @apply text-4xl ml-4 mb-6 tracking-tight font-semibold;
+}
+/* Works in Chrome, Edge, Safari */
+/* Hide scrollbar for Chrome, Safari, Opera */
+html::-webkit-scrollbar {
+  display: none;
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+/* Hide scrollbar for IE, Edge, Firefox */
+html {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;     /* Firefox */
 }
+.no-scrollbar::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Opera */
+}
+.no-scrollbar {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;     /* Firefox */
+}
+.form-input{
+  @apply block w-full rounded-md bg-accent px-3 py-1.5 text-base text-black placeholder:text-black/60 outline-1 outline-white/10 focus:outline-2 focus:outline-secondary border sm:text-sm}
+
