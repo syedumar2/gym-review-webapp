@@ -10,7 +10,7 @@ const Navbar = () => {
 
   return (
     <header>
-      {pathname?.includes("/listings") || pathname?.includes("/details") ? (
+      {pathname?.includes("/listings") || pathname?.includes("/details") || pathname?.includes("/dashboard") ? (
         <ListingPageNav isOpen={isOpen} setIsOpen={setIsOpen} />
       ) : (
         <LandingPageNav isOpen={isOpen} setIsOpen={setIsOpen} />

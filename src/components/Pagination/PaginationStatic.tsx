@@ -7,21 +7,21 @@ const PaginationStatic = () => {
   return (
     <div className="flex items-center gap-2">
       {/* Previous button */}
-      <Button className="hover:cursor-pointer bg-gray-200 text-black" disabled>
+      <Button className="hover:cursor-pointer bg-secondary text-white" disabled>
         Previous
       </Button>
 
       {/* Page numbers */}
       {pages.map((page, idx) =>
         page === "..." ? (
-          <span key={idx} className="px-2 py-1 text-white">
+          <span key={idx} className="px-2 py-1 text-black">
             ...
           </span>
         ) : (
           <Button
             key={idx}
             className={`hover:cursor-pointer ${
-              page === 2 ? "bg-red-600 text-white" : "bg-gray-200 text-black"
+              page === 2 ? "bg-black text-white" : "bg-secondary text-white"
             }`}
           >
             {page}
@@ -30,7 +30,7 @@ const PaginationStatic = () => {
       )}
 
       {/* Next button */}
-      <Button className="hover:cursor-pointer bg-gray-200 text-black">
+      <Button className="hover:cursor-pointer bg-secondary text-white">
         Next
       </Button>
     </div>

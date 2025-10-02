@@ -1,9 +1,11 @@
 import { Menu, Search, X } from "lucide-react";
 import Link from "next/link";
-import { DarkModeToggle } from "../Buttons/DarkModeToggle";
+import { Dispatch, SetStateAction } from "react";
 import Logo from "../Buttons/Logo";
 import { Button } from "../ui/button";
-import { Dispatch, SetStateAction } from "react";
+import LoginOrRegisterButtons from "./LoginOrRegisterButtons";
+import { usePathname } from "next/navigation";
+import UserLoggedInButtons from "./UserLoggedInButtons";
 
 const ListingPageNav = ({
   isOpen,
@@ -12,6 +14,7 @@ const ListingPageNav = ({
   setIsOpen: Dispatch<SetStateAction<boolean>>;
   isOpen: boolean;
 }) => {
+  const pathname = usePathname();
   return (
     <>
       <nav className="bg-accent">
@@ -48,24 +51,12 @@ const ListingPageNav = ({
             </div>
             <div></div>
           </div>
-
-          {/* Desktop Right Section */}
-          <div className="hidden md:flex items-center space-x-4">
-            <Link
-              href="/login"
-              className="text-textColor hover:text-secondary text-sm"
-            >
-              Login
-            </Link>
-            <Button
-              variant="secondary"
-              className="  rounded-full px-6 py-2 text-sm font-medium shadow text-white  active:scale-95"
-            >
-              <Link href="/signup">Get Started</Link>
-            </Button>
-            <DarkModeToggle />
-          </div>
-
+          {/* Desktop Buttons */}
+          {pathname?.includes("/dashboard") ? (
+            <UserLoggedInButtons />
+          ) : (
+            <LoginOrRegisterButtons />
+          )}
           {/* Mobile Menu Button */}
           <div className="md:hidden">
             <button onClick={() => setIsOpen(!isOpen)}>

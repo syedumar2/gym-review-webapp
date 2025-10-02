@@ -1,6 +1,7 @@
 export interface Review {
   id: string;          // changed to string to match gym IDs if needed
-  gymId: string;       // gym ID to associate review with a gym
+  gymId: string; 
+    gymName?: string;       // gym ID to associate review with a gym
   userName: string;
   userAvatar: string;  // URL to avatar image
   rating: number;      // 0-5

@@ -107,14 +107,15 @@ export const dummyGyms: Gym[] = [
       },
     ],
     images: [
-      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRs_W7f7LzDkgRmO2nZVpWw3GgMmzN_r3t79A&s"
-      ,
+      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRs_W7f7LzDkgRmO2nZVpWw3GgMmzN_r3t79A&s",
+
       "https://source.unsplash.com/800x600/?crossfit,gym",
     ],
     avgRating: 4.2,
     reviewCount: 2,
     type: "Yoga/CrossFit",
     genderSegregated: "Co-ed",
+    equipment: []
   },
   {
     id: "g3",
@@ -142,14 +143,15 @@ export const dummyGyms: Gym[] = [
       },
     ],
     images: [
-      "https://powerliftingshop.com/cdn/shop/articles/20231114_162403-scaled.webp?v=1741340142"
-      ,
+      "https://powerliftingshop.com/cdn/shop/articles/20231114_162403-scaled.webp?v=1741340142",
+
       "https://source.unsplash.com/800x600/?barbell,weights",
     ],
     avgRating: 4.8,
     reviewCount: 4,
     type: "Gym",
     genderSegregated: "Male",
+    equipment: []
   },
   {
     id: "g4",
@@ -177,13 +179,14 @@ export const dummyGyms: Gym[] = [
       },
     ],
     images: [
-      "https://source.unsplash.com/800x600/?pilates,fitness"
-      ,
+      "https://source.unsplash.com/800x600/?pilates,fitness",
+
       "https://source.unsplash.com/800x600/?meditation,wellness",
     ],
     avgRating: 4.3,
     reviewCount: 3,
     type: "Wellness/Pilates",
     genderSegregated: "Female",
+    equipment: []
   },
 ];

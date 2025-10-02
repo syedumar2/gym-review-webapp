@@ -36,18 +36,18 @@ export default function GymDetails() {
           <div className="space-y-2 ">
             <h1 className="text-3xl font-bold">{gym.name}</h1>
             <p className="flex gap-1 items-center text-gray mt-4">
-              <MapPin color="black" size={20} /> {gym.address.line1},{" "}
+              <MapPin className="text-black" size={20} /> {gym.address.line1},{" "}
               {gym.address.city}
             </p>
             <p className="flex gap-1 items-center text-gray">
-              <Dumbbell color="black" size={20} />
+              <Dumbbell className="text-black" size={20} />
               {gym.type} • {gym.genderSegregated}
             </p>
             <p className="flex gap-1 items-center text-gray">
-              <Phone color="black" size={20} /> {gym.phone}
+              <Phone className="text-black" size={20} /> {gym.phone}
             </p>
             <p className="flex gap-2 items-center text-gray">
-              <Clock color="black" size={20} /> {gym.hours}
+              <Clock className="text-black" size={20} /> {gym.hours}
             </p>
           </div>
           <div className="flex items-center gap-2 mb-12">

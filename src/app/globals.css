@@ -2,7 +2,7 @@
 @import "tw-animate-css";
 
 @theme {
-  --color-*: initial;
+  
   --color-primary: #e5e5e5  ;
   --color-secondary: #0077b6;
   --color-accent: #f8f9fa;
@@ -26,7 +26,9 @@
   
 }
 
-
+.dashboard-title{
+  @apply text-2xl font-semibold mb-6;
+}
 .hero-heading{
   @apply mb-5 font-sans text-6xl font-bold tracking-tight text-white ;
 }

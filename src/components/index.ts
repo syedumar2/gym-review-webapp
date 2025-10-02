@@ -12,6 +12,12 @@ import SignUpForm from "./Forms/RegisterComponent"
 import GymListings from "./GymListings/GymListings"
 import LandingPageNav from "./NavBars/LandingPageNav"
 import PaginationStatic from "./Pagination/PaginationStatic"
+import UserDashboardNav from "./User/UserDashboardNav"
+import UserProfile from "./User/UserProfile"
+import { UserReviews } from "./User/UserReviews"
+import GymRequests from "./User/GymRequests"
+import GymSubmissionDetails from "./User/GymSubmissionDetails"
+
 
 export {
     Header,
@@ -25,8 +31,14 @@ export {
     SignInForm,
     Logo,
     SignUpForm,
-    GymListings
-    , LandingPageNav,
-    PaginationStatic
+    GymListings,
+    LandingPageNav,
+    PaginationStatic,
+    UserDashboardNav,
+    UserProfile,
+    UserReviews,
+    GymRequests,
+    GymSubmissionDetails
+
 
 }

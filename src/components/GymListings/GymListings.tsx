@@ -7,7 +7,7 @@ const GymListings = () => {
   return (
     <>
       <section className="py-4 px-4 md:px-8 lg:px-12">
-        <h1 className="section-heading text-xl md:text-2xl mb-4">
+        <h1 className="section-heading !text-xl mb-4">
           Showing results for
         </h1>
         <div className="grid gap-8 sm:grid-cols-1 md:grid-cols-3 justify-items-center">
