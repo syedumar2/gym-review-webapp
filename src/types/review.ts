@@ -8,6 +8,7 @@ export interface Review {
   body: string;        // review text
   createdAt: string;   // ISO string
   images?: string[];   // optional images attached to review
+  approved?: boolean;
 }
 
 export const dummyReviews: Review[] = [

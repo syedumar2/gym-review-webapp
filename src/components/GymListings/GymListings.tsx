@@ -6,7 +6,7 @@ const listings = dummyGyms;
 const GymListings = () => {
   return (
     <>
-      <section className="py-4 px-4 md:px-8 lg:px-12">
+      <section className="wrapper">
         <h1 className="section-heading !text-xl mb-4">
           Showing results for
         </h1>

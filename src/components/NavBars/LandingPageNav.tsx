@@ -18,12 +18,7 @@ const LandingPageNav = ({
         {/* Left: Logo / Brand */}
         <div className="flex items-center justify-between gap-6">
           <Logo />
-          <Link
-            href="/listings"
-            className="text-textColor hover:text-secondary text-sm mt-1"
-          >
-            Gym Listings{" "}
-          </Link>
+  
         </div>
 
         {/* Desktop Right Section */}

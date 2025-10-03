@@ -34,10 +34,10 @@ const Pagination = ({
   };
 
   return (
-    <div className={className}>
+    <div className={`flex items-center gap-2 ${className}`}>
       {/* Previous button */}
       <Button
-        className="hover:cursor-pointer"
+        className="hover:cursor-pointer bg-secondary text-white disabled:opacity-50"
         variant={undefined}
         size={undefined}
         disabled={currentPage === 1}
@@ -49,36 +49,42 @@ const Pagination = ({
       </Button>
 
       {/* Page numbers */}
-      <div className="flex gap-2 ">
-        {getPages().map((page, idx) =>
-          page === "..." ? (
-            <span key={idx} className="px-2 py-1 text-gray-500">
-              ...
-            </span>
-          ) : (
-            <Button
-                key={idx}
-                onClick={() => typeof page === "number" && onPageChange(page)}
-                className={`hover:cursor-pointer ${page === currentPage ? "bg-red-600 text-white" : "bg-gray-200"}`} variant={undefined} size={undefined}            >
-              {page}
-            </Button>
-          )
-        )}
-        {/* Next button */}
-        <Button
-          className="hover:cursor-pointer"
-          variant={undefined}
-          size={undefined}
-          disabled={currentPage === totalPages}
-          onClick={() =>
-            currentPage != null &&
-            totalPages != null &&
-            onPageChange(Math.min(currentPage + 1, totalPages))
-          }
-        >
-          Next
-        </Button>
-      </div>
+      {getPages().map((page, idx) =>
+        page === "..." ? (
+          <span key={idx} className="px-2 py-1 text-gray">
+            ...
+          </span>
+        ) : (
+          <Button
+            key={idx}
+            onClick={() => typeof page === "number" && onPageChange(page)}
+            className={`hover:cursor-pointer ${
+              page === currentPage
+                ? "bg-black text-white" // active page
+                : "bg-secondary text-white" // inactive
+            }`}
+            variant={undefined}
+            size={undefined}
+          >
+            {page}
+          </Button>
+        )
+      )}
+
+      {/* Next button */}
+      <Button
+        className="hover:cursor-pointer bg-secondary text-white disabled:opacity-50"
+        variant={undefined}
+        size={undefined}
+        disabled={currentPage === totalPages}
+        onClick={() =>
+          currentPage != null &&
+          totalPages != null &&
+          onPageChange(Math.min(currentPage + 1, totalPages))
+        }
+      >
+        Next
+      </Button>
     </div>
   );
 };

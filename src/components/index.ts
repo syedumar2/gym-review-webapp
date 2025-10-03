@@ -17,7 +17,11 @@ import UserProfile from "./User/UserProfile"
 import { UserReviews } from "./User/UserReviews"
 import GymRequests from "./User/GymRequests"
 import GymSubmissionDetails from "./User/GymSubmissionDetails"
-
+import UsersList from "./Admin/Users/UsersList"
+import AdminDashboardNav from "./Admin/Navigation/AdminDashboardNav"
+import BlacklistedUsersList from "./Admin/Blacklist/BlackListedUsersList"
+import GymSubmissionsList from "./Admin/Submissions/GymSubmissionsList"
+import ReportedReviewsList from "./Admin/ReportedReviews/ReportedReviewsList"
 
 export {
     Header,
@@ -38,7 +42,13 @@ export {
     UserProfile,
     UserReviews,
     GymRequests,
-    GymSubmissionDetails
+    GymSubmissionDetails,
+    UsersList,
+    AdminDashboardNav,
+    BlacklistedUsersList,
+    GymSubmissionsList,
+    ReportedReviewsList
+
 
 
 }
