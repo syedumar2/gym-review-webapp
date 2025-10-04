@@ -9,6 +9,8 @@ export interface Review {
   createdAt: string;   // ISO string
   images?: string[];   // optional images attached to review
   approved?: boolean;
+  likes?: number;
+  dislikes?: number; 
 }
 
 export const dummyReviews: Review[] = [
