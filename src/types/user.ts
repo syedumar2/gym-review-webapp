@@ -1,22 +1,23 @@
+import { $Enums } from "@/generated/prisma";
+import { JsonValue } from "@/generated/prisma/runtime/library";
+
 export interface User {
-    id: string;
     name: string;
-    username?: string;
+    id: string;
     email: string;
-    avatarUrl?: string;
-    bio?: string;
-    location?: UserAddress;
-    gender?: "Male" | "Female" | "Other";
-
-    role: "user" | "admin" | "gym_owner";
-
+    image: string | null;
+    password: string | null;
+    bio: string | null;
+    location: JsonValue;
+    gender: $Enums.Gender | null;
+    role: $Enums.Role;
+    emailVerified: Date | null;
     reviewCount: number;
     gymRequestsCount: number;
-    avgRatingGiven?: number;
-    favorites?: string[];
+    avgRatingGiven: number | null;
+    favorites: string[];
     isVerified: boolean;
-    lastLogin?: Date;
-
+    lastLogin: Date | null;
     createdAt: Date;
     updatedAt: Date;
 }

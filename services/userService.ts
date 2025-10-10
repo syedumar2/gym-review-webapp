@@ -1,34 +1,52 @@
-// /services/userService.ts
+/**
+ * User Service Module
+ * -------------------
+ * Handles all business logic related to users.
+ * This service uses Prisma ORM for database operations.
+ */
 
-import { User } from "@/generated/prisma/client";
+import { Prisma, User } from "@/generated/prisma/client";
 import prisma from "../lib/prisma";
-import bcrypt from "bcrypt";
+import bcrypt from "bcryptjs";
 
-// Fetch all users
-export const getAllUsers = async (): Promise<User[]> => {
-  return prisma.user.findMany();
-};
 
-// Fetch a user by ID
+
+
+
+/**
+ * Get a user by ID.
+ * @param {string} id - User ID.
+ * @returns {Promise<User|null>} The user if found, else null.
+ */
 export const getUserById = async (id: string): Promise<User | null> => {
   return prisma.user.findUnique({ where: { id } });
 };
 
-
-export const getUserByEmail = async(email:string): Promise<User|null> => {
-    return prisma.user.findUnique({ where: { email } });
+/**
+ * Get a user by email.
+ * @param {string} email - User email address.
+ * @returns {Promise<User|null>} The user if found, else null.
+ */
+export const getUserByEmail = async (email: string): Promise<User | null> => {
+  return prisma.user.findUnique({ where: { email } });
 
 }
-// Create a new user (signup)
+/**
+ * Creates a new user and stores it in the database.
+ * @warning Do NOT hash the password before calling; hashing is done internally.
+ * @param {Object} data - User details.
+ * @param {string} data.name - User's name.
+ * @param {string} data.email - User's email.
+ * @param {string} data.password - Plaintext password.
+ * @param {"user"|"admin"} [data.role] - Optional user role (default: "user").
+ * @returns {Promise<User>} Created user object.
+ */
 export const createUser = async (data: {
   name: string;
   email: string;
   password: string;
   role?: "user" | "admin";
 }): Promise<User> => {
-
-
-
   const hashedPassword = await bcrypt.hash(data.password, 10);
 
   return prisma.user.create({
@@ -44,16 +62,30 @@ export const createUser = async (data: {
   });
 };
 
-// Verify user for login
-export const verifyUser = async (
-  email: string,
-  password: string
-): Promise<User | null> => {
-  const user = await prisma.user.findUnique({ where: { email } });
-  if (!user) return null;
+/**
+ * Updates the fields of a user record in the database.
+ * Only the provided fields in `data` will be updated.
+ *
+ * @param {string} id - The unique ID of the user to update.
+ * @param {Prisma.UserUpdateInput} data - Partial user data to update (e.g. name, email, password, etc.).
+ * @returns {Promise<User>} The updated user object.
+ *
+ * @example
+ * // Update user name and email
+ * const updatedUser = await updateUser("user123", {
+ *   name: "John Doe",
+ *   email: "john@example.com"
+ * });
+ */
+export const updateUser = async (id: string, data: Prisma.UserUpdateInput): Promise<User> => {
+  return prisma.user.update({
+    where: { id },
+    data: { ...data }
+  })
+}
 
-  const isValid = await bcrypt.compare(password, user.password);
-  if (!isValid) return null;
-
-  return user;
+// Fetch all users
+export const getAllUsers = async (): Promise<User[]> => {
+  return prisma.user.findMany();
 };
+

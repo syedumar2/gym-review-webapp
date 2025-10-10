@@ -1,20 +1,25 @@
+"use client";
+
 import { Menu, Search, X } from "lucide-react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { Dispatch, SetStateAction } from "react";
 import Logo from "../Buttons/Logo";
 import { Button } from "../ui/button";
 import LoginOrRegisterButtons from "./LoginOrRegisterButtons";
-import { usePathname } from "next/navigation";
-import UserLoggedInButtons from "./UserLoggedInButtons";
-
+import UserLoggedInClient from "./UserLoggedInClient";
 const ListingPageNav = ({
   isOpen,
   setIsOpen,
+  session,
 }: {
   setIsOpen: Dispatch<SetStateAction<boolean>>;
   isOpen: boolean;
+  session: any;
 }) => {
   const pathname = usePathname();
+  const isLoggedIn = !!session?.user;
+  console.log("Pathname includes dashboard",pathname?.includes("/dashboard"))
   return (
     <>
       <nav className="bg-accent">
@@ -53,7 +58,11 @@ const ListingPageNav = ({
           </div>
           {/* Desktop Buttons */}
           {pathname?.includes("/dashboard") ? (
-            <UserLoggedInButtons />
+            isLoggedIn ? (
+              <UserLoggedInClient user={session.user} />
+            ) : (
+              <LoginOrRegisterButtons />
+            )
           ) : (
             <LoginOrRegisterButtons />
           )}

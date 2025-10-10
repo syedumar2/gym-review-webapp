@@ -13,7 +13,7 @@ import GymListings from "./GymListings/GymListings"
 import LandingPageNav from "./NavBars/LandingPageNav"
 import PaginationStatic from "./Pagination/PaginationStatic"
 import UserDashboardNav from "./User/UserDashboardNav"
-import UserProfile from "./User/UserProfile"
+import UserProfile from "./User/UserProfile/UserProfile"
 import { UserReviews } from "./User/UserReviews"
 import GymRequests from "./User/GymRequests"
 import GymSubmissionDetails from "./User/GymSubmissionDetails"
@@ -22,6 +22,7 @@ import AdminDashboardNav from "./Admin/Navigation/AdminDashboardNav"
 import BlacklistedUsersList from "./Admin/Blacklist/BlackListedUsersList"
 import GymSubmissionsList from "./Admin/Submissions/GymSubmissionsList"
 import ReportedReviewsList from "./Admin/ReportedReviews/ReportedReviewsList"
+import Socials from "./Buttons/Socials"
 
 export {
     Header,
@@ -47,7 +48,8 @@ export {
     AdminDashboardNav,
     BlacklistedUsersList,
     GymSubmissionsList,
-    ReportedReviewsList
+    ReportedReviewsList,
+    Socials
 
 
 

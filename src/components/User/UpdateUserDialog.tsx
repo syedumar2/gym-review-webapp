@@ -8,15 +8,38 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Button } from "../ui/button";
-import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar"; 
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Upload } from "lucide-react";
 import { User } from "@/types/user";
 
-type Props = {
+interface Props {
   user: User;
-};
+}
 
 export const UpdateUserDialog = ({ user }: Props) => {
+  // Safely extract city and state from location
+  const city = (() => {
+    if (
+      user.location &&
+      typeof user.location === "object" &&
+      !Array.isArray(user.location)
+    ) {
+      return (user.location as Record<string, any>).city ?? "";
+    }
+    return "";
+  })();
+
+  const state = (() => {
+    if (
+      user.location &&
+      typeof user.location === "object" &&
+      !Array.isArray(user.location)
+    ) {
+      return (user.location as Record<string, any>).state ?? "";
+    }
+    return "";
+  })();
+
   return (
     <Dialog>
       <DialogTrigger>
@@ -25,7 +48,7 @@ export const UpdateUserDialog = ({ user }: Props) => {
         </Button>
       </DialogTrigger>
 
-      <DialogContent className="bg-white max-w-lg w-full rounded-lg p-6">
+      <DialogContent className="bg-white max-w-lg w-full max-h-[80vh] overflow-y-auto rounded-lg p-6 no-scrollbar">
         <DialogHeader>
           <DialogTitle className="text-xl font-semibold">
             Edit Profile
@@ -38,13 +61,13 @@ export const UpdateUserDialog = ({ user }: Props) => {
         {/* Avatar + Basic Info */}
         <div className="flex flex-col md:flex-row items-center gap-6 my-4">
           <div className="flex flex-col items-center gap-2">
-            <Avatar className="size-24">
+            <Avatar className="w-16 h-16">
               <AvatarImage
-                src={user.avatarUrl}
+                src={user && user.image ? user?.image : undefined}
                 alt={user.name}
-                className="rounded-full"
               />
-              <AvatarFallback className="bg-secondary text-white text-2xl">
+
+              <AvatarFallback className="bg-cyan-700 text-4xl text-white">
                 {user.name.charAt(0)}
               </AvatarFallback>
             </Avatar>
@@ -58,18 +81,12 @@ export const UpdateUserDialog = ({ user }: Props) => {
 
           <div className="flex-1 w-full space-y-3">
             <div>
-              <label className="block text-sm font-medium mb-1">Full Name</label>
+              <label className="block text-sm font-medium mb-1">
+                Full Name
+              </label>
               <input
                 type="text"
                 defaultValue={user.name}
-                className="w-full border rounded px-3 py-2 bg-gray-100"
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium mb-1">Username</label>
-              <input
-                type="text"
-                defaultValue={user.username ?? ""}
                 className="w-full border rounded px-3 py-2 bg-gray-100"
               />
             </div>
@@ -101,16 +118,32 @@ export const UpdateUserDialog = ({ user }: Props) => {
         </div>
 
         {/* Location */}
+        <div className="mt-3 grid grid-cols-2 gap-3">
+          <div>
+            <label className="block text-sm font-medium mb-1">City</label>
+            <input
+              type="text"
+              defaultValue={city}
+              className="w-full border rounded px-3 py-2 bg-gray-100"
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium mb-1">State</label>
+            <input
+              type="text"
+              defaultValue={state}
+              className="w-full border rounded px-3 py-2 bg-gray-100"
+            />
+          </div>
+        </div>
+
+        {/* Bio */}
         <div className="mt-3">
-          <label className="block text-sm font-medium mb-1">Location</label>
-          <input
-            type="text"
-            defaultValue={
-              user.location
-                ? `${user.location.city}, ${user.location.state} - ${user.location.pincode}`
-                : ""
-            }
+          <label className="block text-sm font-medium mb-1">Bio</label>
+          <textarea
+            defaultValue={user.bio ?? ""}
             className="w-full border rounded px-3 py-2 bg-gray-100"
+            rows={3}
           />
         </div>
 

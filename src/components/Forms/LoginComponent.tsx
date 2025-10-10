@@ -1,26 +1,53 @@
 "use client";
 
+import { login, LoginResponse } from "@/app/login/actions";
+import { LoginInput, LoginSchema } from "@/schemas/LoginSchema";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { LoaderCircle, TriangleAlert } from "lucide-react";
 import Link from "next/link";
-import { Button } from "../ui/button";
-import { useForm } from "react-hook-form";
+import { useState } from "react";
 import type { SubmitHandler } from "react-hook-form";
+import { useForm } from "react-hook-form";
+import { toast } from "sonner";
 import Logo from "../Buttons/Logo";
-
-
-interface SignInFormValues {
-  email: string;
-  password: string;
-}
+import Socials from "../Buttons/Socials";
+import { useSearchParams } from "next/navigation";
 
 export default function SignInForm() {
+  const searchParams = useSearchParams();
+  const urlError =
+    searchParams?.get("error") === "OAuthAccountNotLinked"
+      ? "Email already in use with a different provider!"
+      : "";
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string>("");
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<SignInFormValues>();
+  } = useForm<LoginInput>({
+    resolver: zodResolver(LoginSchema),
+    mode: "onTouched",
+  });
 
-  const onSubmit: SubmitHandler<SignInFormValues> = (data) => {
+  const onSubmit: SubmitHandler<LoginInput> = async (data) => {
     console.log("Sign In data:", data);
+    setLoading(true);
+    try {
+      const res: LoginResponse = await login(data);
+      if (res.success) {
+        toast.success(res.message);
+      } else {
+        setError(res.error || "Something went wrong");
+        toast.error(res.error);
+      }
+    } catch (error: any) {
+      console.error(error);
+      setError(error.message || "Something went wrong");
+      toast.error(error.message || "Something went wrong");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -49,14 +76,9 @@ export default function SignInForm() {
                 id="email"
                 type="email"
                 placeholder="Email"
-                {...register("email", {
-                  required: "Email is required",
-                  pattern: {
-                    value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
-                    message: "Invalid email",
-                  },
-                })}
+                {...register("email")}
                 className="form-input"
+                disabled={loading}
               />
             </div>
             {errors.email && (
@@ -87,11 +109,9 @@ export default function SignInForm() {
                 id="password"
                 type="password"
                 placeholder="Password"
-                {...register("password", {
-                  required: "Password is required",
-                  minLength: { value: 6, message: "Minimum 6 characters" },
-                })}
+                {...register("password")}
                 className="form-input"
+                disabled={loading}
               />
             </div>
             {errors.password && (
@@ -99,13 +119,49 @@ export default function SignInForm() {
             )}
           </div>
 
+          {urlError && (
+            <div
+              className="flex justify-center items-center gap-3 mt-4 w-full max-w-sm rounded-md 
+               bg-red-100 border border-red-300 text-red-700 
+               dark:bg-red-950 dark:border-red-800 dark:text-red-200
+               px-4 py-3 text-sm text-center shadow-sm transition-colors"
+            >
+              <TriangleAlert size={18} />
+              {urlError}
+            </div>
+          )}
+          {error && (
+            <div
+              className="flex justify-center items-center gap-3 mt-4 w-full max-w-sm rounded-md 
+               bg-red-100 border border-red-300 text-red-700 
+               dark:bg-red-950 dark:border-red-800 dark:text-red-200
+               px-4 py-3 text-sm text-center shadow-sm transition-colors"
+            >
+              <TriangleAlert size={18} />
+              {error}
+            </div>
+          )}
           {/* Submit */}
           <div>
             <button
               type="submit"
-              className="flex w-full justify-center rounded-md bg-secondary px-3 py-1.5 text-sm font-semibold text-white hover:bg-secondary-dark focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-secondary"
+              className={`flex w-full justify-center rounded-md px-3 py-1.5 text-sm font-semibold text-white 
+    ${
+      loading
+        ? "bg-secondary/95 cursor-not-allowed"
+        : "bg-secondary hover:bg-secondary-dark"
+    } 
+    focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-secondary`}
+              disabled={loading}
             >
-              Sign In
+              {loading ? (
+                <span className="flex items-center gap-2">
+                  <LoaderCircle className="w-4 h-4 animate-spin" /> Logging
+                  in...
+                </span>
+              ) : (
+                "Log in"
+              )}
             </button>
           </div>
         </form>
@@ -118,22 +174,7 @@ export default function SignInForm() {
         </div>
 
         {/* Social Sign In */}
-        <div className="flex flex-col gap-3">
-          <Button
-            variant="secondary"
-            className="py-4 px-2  flex items-center justify-center gap-2"
-          >
-            <img width={21} height={21} src="/icons/google-icon.svg" />
-            Continue with Google
-          </Button>
-          <Button
-            variant="secondary"
-            className="py-4 px-2  flex items-center justify-center gap-2"
-          >
-            <img width={22} height={22} src="/icons/github-mark.svg" />
-            Continue with GitHub
-          </Button>
-        </div>
+        <Socials />
 
         {/* Footer */}
         <p className="mt-10 text-center text-sm text-black">

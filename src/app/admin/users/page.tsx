@@ -1,9 +1,10 @@
-import { AdminDashboardNav, Footer, Header, UsersList } from "@/components"
+import { AdminDashboardNav, Footer, UsersList } from "@/components"
+import ServerHeader from "@/components/Header"
 
 const page = () => {
   return (
     <>
-    <Header/>
+    <ServerHeader/>
     <AdminDashboardNav/>
     <UsersList/>
     <Footer/>

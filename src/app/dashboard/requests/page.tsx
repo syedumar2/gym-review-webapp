@@ -1,9 +1,10 @@
 import { Footer, GymRequests, Header, UserDashboardNav } from '@/components'
+import ServerHeader from '@/components/Header'
 
 const page = () => {
   return (
     <>
-    <Header/>
+    <ServerHeader/>
     <UserDashboardNav/>
     <GymRequests/>
     <Footer/>

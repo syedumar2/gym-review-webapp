@@ -20,7 +20,7 @@ export default function RootLayout({ children }: any) {
             >
               {children}
             </ThemeProvider>
-             <Toaster />
+            <Toaster richColors position="top-center" />
           </body>
         </html>
       </SessionWrapper>

@@ -9,6 +9,14 @@ import { ApiResponse } from "@/types/api";
 import { toast } from "sonner";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { registerUser } from "@/app/signup/actions";
+import { LoaderCircle } from "lucide-react";
+import {
+  RegistrationInput,
+  registrationSchema,
+} from "@/schemas/RegistrationSchema";
+import { zodResolver } from "@hookform/resolvers/zod";
+import Socials from "../Buttons/Socials";
 
 interface SignUpFormValues {
   fullName: string;
@@ -26,10 +34,11 @@ export default function SignUpForm() {
   const {
     register,
     handleSubmit,
-    watch,
     formState: { errors },
-  } = useForm<SignUpFormValues>({
-    mode: "onChange",
+    watch,
+  } = useForm<RegistrationInput>({
+    resolver: zodResolver(registrationSchema),
+    mode: "onChange", // validate on change or "onTouched" for blur
   });
 
   const password = watch("password");
@@ -37,13 +46,7 @@ export default function SignUpForm() {
   const onSubmit: SubmitHandler<SignUpFormValues> = async (data) => {
     setLoading(true);
     try {
-      const response = await fetch("/api/register", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data),
-      });
-
-      const result: SignupResponse = await response.json();
+      const result: SignupResponse = await registerUser(data);
 
       if (result.success) {
         toast.success(result.message + " You can now login");
@@ -83,7 +86,7 @@ export default function SignUpForm() {
             <div className="mt-2">
               <input
                 placeholder="Full Name"
-                {...register("fullName", { required: "Full name is required" })}
+                {...register("fullName")}
                 autoComplete="name"
                 className="form-input"
               />
@@ -105,13 +108,7 @@ export default function SignUpForm() {
               <input
                 type="email"
                 placeholder="Email"
-                {...register("email", {
-                  required: "Email is required",
-                  pattern: {
-                    value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
-                    message: "Invalid email",
-                  },
-                })}
+                {...register("email")}
                 className="form-input"
               />
             </div>
@@ -132,10 +129,7 @@ export default function SignUpForm() {
               <input
                 type="password"
                 placeholder="Password"
-                {...register("password", {
-                  required: "Password is required",
-                  minLength: { value: 6, message: "Minimum 6 characters" },
-                })}
+                {...register("password")}
                 className="form-input"
               />
             </div>
@@ -156,11 +150,7 @@ export default function SignUpForm() {
               <input
                 type="password"
                 placeholder="Confirm Password"
-                {...register("confirmPassword", {
-                  required: "Please confirm your password",
-                  validate: (value) =>
-                    value === password || "Passwords do not match",
-                })}
+                {...register("confirmPassword")}
                 className="form-input"
               />
             </div>
@@ -178,13 +168,20 @@ export default function SignUpForm() {
               className={`flex w-full justify-center rounded-md px-3 py-1.5 text-sm font-semibold text-white 
     ${
       loading
-        ? "bg-blue-500 cursor-not-allowed"
+        ? "bg-secondary/50 cursor-not-allowed"
         : "bg-secondary hover:bg-secondary-dark"
     } 
     focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-secondary`}
               disabled={loading}
             >
-              {loading ? "Registering..." : "Sign Up"}
+              {loading ? (
+                <span className="flex items-center gap-2">
+                  <LoaderCircle className="w-4 h-4 animate-spin" />{" "}
+                  Registering...
+                </span>
+              ) : (
+                "Sign Up"
+              )}
             </button>
           </div>
         </form>
@@ -197,22 +194,7 @@ export default function SignUpForm() {
         </div>
 
         {/* Social Sign Up */}
-        <div className="flex flex-col gap-3">
-          <Button
-            variant="secondary"
-            className="py-4 px-2 flex items-center justify-center gap-2 !text-white !dark:text-white"
-          >
-            <img width={21} height={21} src="/icons/google-icon.svg" />
-            Continue with Google
-          </Button>
-          <Button
-            variant="secondary"
-            className="py-4 px-2 flex items-center justify-center gap-2 !text-white !dark:text-white"
-          >
-            <img width={22} height={22} src="/icons/github-mark.svg" />
-            Continue with GitHub
-          </Button>
-        </div>
+        <Socials />
 
         {/* Footer */}
         <p className="mt-10 text-center text-sm text-black">

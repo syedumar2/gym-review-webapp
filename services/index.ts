@@ -1,13 +1,5 @@
-import {
-    getAllUsers,
-    getUserById,
-    createUser,
-    verifyUser
-} from "./userService";
 
+import *  as userService from "./userService";
 export {
-    getAllUsers,
-    getUserById,
-    createUser,
-    verifyUser
+    userService
 }

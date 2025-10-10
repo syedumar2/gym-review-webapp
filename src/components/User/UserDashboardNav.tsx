@@ -11,7 +11,7 @@ export default function UserDashboardNav() {
 
   const navItems = [
     {
-      href: "/dashboard/profile",
+      href: "/dashboard",
       label: "My Profile",
       icon: <User className="w-4 h-4" />,
     },

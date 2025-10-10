@@ -1,9 +1,10 @@
-import { AdminDashboardNav, BlacklistedUsersList, Footer, Header } from '@/components'
+import { AdminDashboardNav, BlacklistedUsersList, Footer } from '@/components'
+import ServerHeader from '@/components/Header'
 
 const page = () => {
   return (
     <>
-    <Header/>
+    <ServerHeader/>
     <AdminDashboardNav/>
     <BlacklistedUsersList/>
     <Footer/>
