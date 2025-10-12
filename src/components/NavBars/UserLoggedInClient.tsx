@@ -1,5 +1,6 @@
 "use client";
 
+import { handleSignOut } from "@/actions/userActions";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   DropdownMenu,
@@ -12,11 +13,8 @@ import {
 import { ChevronDown } from "lucide-react";
 import Link from "next/link";
 import { DarkModeToggle } from "../Buttons/DarkModeToggle";
-import { signOut } from "../../../auth";
-import { handleSignOut } from "@/actions/userActions";
 
 const UserLoggedInClient = ({ user }: { user: any }) => {
-  console.log(user);
   return (
     <div className="flex items-center gap-2 ">
       <div className="flex items-center gap-2.5 w-full">
@@ -33,8 +31,8 @@ const UserLoggedInClient = ({ user }: { user: any }) => {
 
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <button className="p-1 rounded hover:bg-gray-100 mr-2">
-            <ChevronDown className="size-4" />
+          <button className=" rounded hover:bg-gray-100 mr-6 ">
+            <ChevronDown className="size-4 " />
           </button>
         </DropdownMenuTrigger>
 
@@ -59,7 +57,9 @@ const UserLoggedInClient = ({ user }: { user: any }) => {
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
-      <DarkModeToggle />
+      <div className="mr-4">
+        <DarkModeToggle />
+      </div>
     </div>
   );
 };

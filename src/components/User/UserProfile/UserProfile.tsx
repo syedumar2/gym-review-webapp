@@ -7,18 +7,19 @@ interface UserProfileProps {
 }
 
 const UserProfile = ({ user }: UserProfileProps) => {
+
   const locationString = (() => {
-    if (!user.location) return "Not specified";
-    const loc = user?.location;
-    if (!loc) return "Not specified";
-    if (typeof loc === "string") return loc;
-    if (typeof loc === "object" && !Array.isArray(loc)) {
-      const obj = loc as Record<string, any>;
-      return `${obj.city ?? "Unknown"}, ${obj.state ?? "Unknown"} (${
-        obj.pincode ?? "—"
-      })`;
+    if (!user.location || typeof user.location !== "object") {
+      return "Not specified";
     }
-    return "Not specified";
+
+    const loc = (user.location as any).set;
+    if (!loc || typeof loc !== "object") return "Not specified";
+
+    const city = loc.city && loc.city.trim() !== "" ? loc.city : "Unknown";
+    const state = loc.state && loc.state.trim() !== "" ? loc.state : "Unknown";
+
+    return `${city}, ${state}`;
   })();
 
   return (
@@ -28,15 +29,12 @@ const UserProfile = ({ user }: UserProfileProps) => {
       {/* Top Section */}
       <div className="flex flex-col p-4 rounded-2xl sm:flex-row items-center sm:items-start gap-6 mb-6">
         <Avatar className="w-24 h-24">
-          <AvatarImage
-            src={user && user.image ? user?.image : undefined}
-            alt={user.name}
-          />
-
+          <AvatarImage src={user.image || undefined} alt={user.name} />
           <AvatarFallback className="bg-cyan-700 text-4xl text-white">
             {user.name.charAt(0)}
           </AvatarFallback>
         </Avatar>
+
         <div className="text-center sm:text-left">
           <p className="text-xl font-medium">{user.name}</p>
           <p className="text-sm text-gray">{user.email}</p>
@@ -49,21 +47,26 @@ const UserProfile = ({ user }: UserProfileProps) => {
         <div>
           <label className="block text-sm font-medium mb-1">Bio</label>
           <p className="text-black bg-primary p-2 border rounded">
-            {user.bio ?? "No bio provided"}
+            {user.bio && user.bio.trim().length > 0
+              ? user.bio
+              : "No bio provided"}
           </p>
         </div>
+
         <div>
           <label className="block text-sm font-medium mb-1">Location</label>
           <p className="text-black bg-primary p-2 border rounded">
             {locationString}
           </p>
         </div>
+
         <div>
           <label className="block text-sm font-medium mb-1">Joined</label>
           <p className="text-black bg-primary p-2 border rounded">
             {user.createdAt.toDateString()}
           </p>
         </div>
+
         <div>
           <label className="block text-sm font-medium mb-1">Last Login</label>
           <p className="text-black bg-primary p-2 border rounded">
@@ -78,10 +81,12 @@ const UserProfile = ({ user }: UserProfileProps) => {
           <p className="text-lg font-semibold">{user.reviewCount}</p>
           <p className="text-xs text-gray-500">Reviews</p>
         </div>
+
         <div className="p-4 rounded bg-primary">
           <p className="text-lg font-semibold">{user.gymRequestsCount}</p>
           <p className="text-xs text-gray-500">Gym Requests</p>
         </div>
+
         <div className="p-4 rounded bg-primary">
           <p className="text-lg font-semibold">{user.avgRatingGiven ?? "—"}</p>
           <p className="text-xs text-gray-500">Avg Rating</p>
@@ -89,7 +94,17 @@ const UserProfile = ({ user }: UserProfileProps) => {
       </div>
 
       <div className="flex justify-end mt-4">
-        <UpdateUserDialog user={user} />
+        <UpdateUserDialog
+          user={{
+            ...user,
+            location:
+              user.location === null
+                ? { city: "", state: "" } // Provide a default UserLocation object if null
+                : (user.location as any).set
+                ? (user.location as any).set
+                : user.location
+          }}
+        />
       </div>
     </section>
   );

@@ -8,7 +8,7 @@ export interface User {
     image: string | null;
     password: string | null;
     bio: string | null;
-    location: JsonValue;
+    location: UserLocation;
     gender: $Enums.Gender | null;
     role: $Enums.Role;
     emailVerified: Date | null;
@@ -21,8 +21,10 @@ export interface User {
     createdAt: Date;
     updatedAt: Date;
 }
-export interface UserAddress {
-    city: string;
-    state: string;
-    pincode: string;
+
+interface UserLocation {
+    set: {
+        city: string;
+        state: string;
+    };
 }
