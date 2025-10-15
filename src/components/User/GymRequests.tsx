@@ -2,6 +2,10 @@
 
 import { useState } from "react";
 import PaginationStatic from "../Pagination/PaginationStatic";
+import { EmptyPage } from "../Error/EmptyPage";
+import { Dumbbell, Icon, PlusCircle } from "lucide-react";
+import { Button } from "../ui/button";
+import Link from "next/link";
 
 type GymRequest = {
   id: string;
@@ -39,6 +43,21 @@ const statusColors: Record<GymRequest["status"], string> = {
 
 const GymRequests = () => {
   const [requests] = useState<GymRequest[]>(dummyRequests);
+  if (!dummyRequests || dummyRequests.length === 0)
+    return (
+      <section className="relative">
+        <EmptyPage
+          heading="No Gym Requests Yet"
+          subHeading="Looks like you haven’t requested any gyms. Submit a request to see your favorite gyms listed here!"
+          Icon={Dumbbell}
+        />
+        <Button className="absolute  bottom-6 right-6" variant={"secondary"}>
+          <Link href="requests/new" className="flex items-center gap-2">
+            <PlusCircle /> Submit a Gym Request
+          </Link>
+        </Button>
+      </section>
+    );
 
   return (
     <section className="p-4">
@@ -105,6 +124,13 @@ const GymRequests = () => {
             </div>
           </div>
         ))}
+      </div>
+      <div className="flex justify-end w-6xl ml-5 py-2">
+        <Button variant={"secondary"}>
+          <Link href="requests/new" className="flex items-center gap-2">
+            <PlusCircle /> Submit a Gym Request
+          </Link>
+        </Button>
       </div>
       <section className="flex w-full items-center justify-center mt-4 py-4">
         <PaginationStatic />

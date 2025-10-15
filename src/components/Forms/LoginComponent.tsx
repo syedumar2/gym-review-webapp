@@ -51,7 +51,7 @@ export default function SignInForm() {
   };
 
   return (
-    <div className="flex min-h-full flex-col justify-center px-6 py-12 lg:px-8 bg-primary">
+    <section className="flex min-h-screen flex-col justify-center px-6 py-12 lg:px-8 bg-primary">
       {/* Logo & Heading */}
       <div className="flex flex-col items-center justify-center">
         <Logo />
@@ -59,7 +59,6 @@ export default function SignInForm() {
           Sign in to your account
         </h2>
       </div>
-
       {/* Form */}
       <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
@@ -85,7 +84,6 @@ export default function SignInForm() {
               <p className="text-red text-sm pt-1">{errors.email.message}</p>
             )}
           </div>
-
           {/* Password */}
           <div>
             <div className="flex items-center justify-between">
@@ -118,13 +116,12 @@ export default function SignInForm() {
               <p className="text-red text-sm pt-1">{errors.password.message}</p>
             )}
           </div>
-
           {urlError && (
             <div
-              className="flex justify-center items-center gap-3 mt-4 w-full max-w-sm rounded-md 
-               bg-red-100 border border-red-300 text-red-700 
-               dark:bg-red-950 dark:border-red-800 dark:text-red-200
-               px-4 py-3 text-sm text-center shadow-sm transition-colors"
+              className="flex justify-center items-center gap-3 mt-4 w-full max-w-sm rounded-md
+                 bg-red-100 border border-red-300 text-red-700
+                 dark:bg-red-950 dark:border-red-800 dark:text-red-200
+                 px-4 py-3 text-sm text-center shadow-sm transition-colors"
             >
               <TriangleAlert size={18} />
               {urlError}
@@ -132,10 +129,10 @@ export default function SignInForm() {
           )}
           {error && (
             <div
-              className="flex justify-center items-center gap-3 mt-4 w-full max-w-sm rounded-md 
-               bg-red-100 border border-red-300 text-red-700 
-               dark:bg-red-950 dark:border-red-800 dark:text-red-200
-               px-4 py-3 text-sm text-center shadow-sm transition-colors"
+              className="flex justify-center items-center gap-3 mt-4 w-full max-w-sm rounded-md
+                 bg-red-100 border border-red-300 text-red-700
+                 dark:bg-red-950 dark:border-red-800 dark:text-red-200
+                 px-4 py-3 text-sm text-center shadow-sm transition-colors"
             >
               <TriangleAlert size={18} />
               {error}
@@ -145,13 +142,13 @@ export default function SignInForm() {
           <div>
             <button
               type="submit"
-              className={`flex w-full justify-center rounded-md px-3 py-1.5 text-sm font-semibold text-white 
-    ${
-      loading
-        ? "bg-secondary/95 cursor-not-allowed"
-        : "bg-secondary hover:bg-secondary-dark"
-    } 
-    focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-secondary`}
+              className={`flex w-full justify-center rounded-md px-3 py-1.5 text-sm font-semibold text-white
+      ${
+        loading
+          ? "bg-secondary/95 cursor-not-allowed"
+          : "bg-secondary hover:bg-secondary-dark"
+      }
+      focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-secondary`}
               disabled={loading}
             >
               {loading ? (
@@ -165,17 +162,14 @@ export default function SignInForm() {
             </button>
           </div>
         </form>
-
         {/* OR Divider */}
         <div className="flex items-center my-4">
           <hr className="flex-grow border-black" />
           <span className="mx-3 text-gray-500 font-medium">Or</span>
           <hr className="flex-grow border-black" />
         </div>
-
         {/* Social Sign In */}
         <Socials />
-
         {/* Footer */}
         <p className="mt-10 text-center text-sm text-black">
           Don’t have an account?{" "}
@@ -187,6 +181,6 @@ export default function SignInForm() {
           </Link>
         </p>
       </div>
-    </div>
+    </section>
   );
 }

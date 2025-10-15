@@ -5,9 +5,10 @@
  * This service uses Prisma ORM for database operations.
  */
 
-import { Prisma, User } from "@/generated/prisma/client";
+import { GymRequest, Prisma, User } from "@/generated/prisma/client";
 import prisma from "../lib/prisma";
 import bcrypt from "bcryptjs";
+import { GymRequestObjectCreationInput } from "@/types/gym";
 
 
 
@@ -88,4 +89,29 @@ export const updateUser = async (id: string, data: Prisma.UserUpdateInput): Prom
 export const getAllUsers = async (): Promise<User[]> => {
   return prisma.user.findMany();
 };
+
+
+
+/**
+ * Creates a new gym request in the database.
+ * 
+ * @param {GymRequestObjectCreationInput} data - Gym request details (name, description, address, plans, amenities, contact info, userId).
+ * @returns {Promise<GymRequest>} The created gym request.
+ *
+ * @example
+ * const gym = await createGymRequest({
+ *   gymName: "Powerhouse Gym",
+ *   description: "Fully equipped fitness center",
+ *   address: { address: "123 Main St", city: "Mumbai", state: "MH" },
+ *   membershipPlans: [{ planName: "Monthly", planType: PlanType.MONTHLY, price: 1500, perks: ["Sauna"] }],
+ *   amenities: ["WiFi"],
+ *   phoneNumber: "9876543210",
+ *   genderSegregation: "UNISEX",
+ *   type: "COMMERCIAL",
+ *   userId: "user123"
+ * });
+ */
+export const createGymRequest = async (data: GymRequestObjectCreationInput): Promise<GymRequest> => {
+  return prisma.gymRequest.create({ data });
+}
 

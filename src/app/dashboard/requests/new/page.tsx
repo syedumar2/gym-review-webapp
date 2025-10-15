@@ -1,4 +1,8 @@
-import { Footer, GymSubmissionDetails, UserDashboardNav } from "@/components";
+import {
+  Footer,
+  GymRequestFormComponent,
+  UserDashboardNav,
+} from "@/components";
 import ServerHeader from "@/components/Header";
 
 const page = () => {
@@ -6,7 +10,7 @@ const page = () => {
     <>
       <ServerHeader />
       <UserDashboardNav />
-      <GymSubmissionDetails />
+      <GymRequestFormComponent />
       <Footer />
     </>
   );

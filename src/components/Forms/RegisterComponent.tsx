@@ -1,21 +1,20 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
 import Link from "next/link";
 
-import { useForm, type SubmitHandler } from "react-hook-form";
-import Logo from "../Buttons/Logo";
-import { ApiResponse } from "@/types/api";
-import { toast } from "sonner";
-import { useState } from "react";
-import { useRouter } from "next/navigation";
 import { registerUser } from "@/app/signup/actions";
-import { LoaderCircle } from "lucide-react";
 import {
   RegistrationInput,
   registrationSchema,
 } from "@/schemas/RegistrationSchema";
+import { ApiResponse } from "@/types/api";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { LoaderCircle } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
+import { useForm, type SubmitHandler } from "react-hook-form";
+import { toast } from "sonner";
+import Logo from "../Buttons/Logo";
 import Socials from "../Buttons/Socials";
 
 interface SignUpFormValues {

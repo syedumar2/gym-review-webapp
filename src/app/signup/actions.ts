@@ -1,7 +1,6 @@
 "use server"
 
 import { ApiResponse } from "@/types/api";
-import bcrypt from "bcryptjs";
 import { userService } from "../../../services";
 
 

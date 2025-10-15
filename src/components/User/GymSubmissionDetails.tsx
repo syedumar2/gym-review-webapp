@@ -2,6 +2,7 @@
 
 
 import { Gym } from "@/types/gym";
+import { EmptyPage } from "..";
 
 // Dummy data
 const dummyGym: Gym = {
@@ -32,6 +33,7 @@ const dummyGym: Gym = {
 
 const GymSubmissionDetails = () => {
   const gym = dummyGym;
+
 
   return (
     <section className="p-4 md:p-8 bg-primary min-h-screen">

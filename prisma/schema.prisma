@@ -25,21 +25,131 @@ enum Role {
   admin
 }
 
+enum GymType {
+  COMMERCIAL // Large general fitness centers
+  CROSSFIT // CrossFit / functional training gyms
+  POWERLIFTING // Strength and weightlifting gyms
+  YOGA // Yoga or wellness studios
+  MIXED // Combines multiple training styles
+}
+
+enum GenderSegregation {
+  MALE_ONLY // Only for men
+  FEMALE_ONLY // Only for women
+  UNISEX // Both genders share the same space
+  TIME_BASED // Different timings for men and women
+}
+
+enum Amenity {
+  CARDIO_EQUIPMENT
+  WEIGHTLIFTING_ZONE
+  FREE_WEIGHTS
+  PERSONAL_TRAINING
+  GROUP_CLASSES
+  YOGA_STUDIO
+  STEAM_ROOM
+  SAUNA
+  LOCKER_ROOM
+  SHOWER_FACILITY
+  PARKING
+  NUTRITION_CONSULTATION
+}
+
+enum Equipment {
+  TREADMILL
+  ELLIPTICAL
+  ROWING_MACHINE
+
+  BENCH_PRESS
+  SQUAT_RACK
+  DUMBBELLS
+  LEG_PRESS
+  LAT_PULLDOWN
+  CHEST_FLY_MACHINE
+
+  BATTLE_ROPES
+  KETTLEBELLS
+  MEDICINE_BALLS
+}
+
+// Cardio Equipment
+enum CardioEquipment {
+  TREADMILL
+  ELLIPTICAL
+  ROWING_MACHINE
+}
+
+// Strength Equipment
+enum StrengthEquipment {
+  BENCH_PRESS
+  SQUAT_RACK
+  DUMBBELLS_2_50KG
+  DUMBBELLS_2_40KG
+  DUMBBELLS_2_30KG
+  DUMBBELLS_2_20KG
+  DUMBBELLS_2_10KG
+  LEG_PRESS
+  LEG_CURL_MACHINE
+  ABDUCTOR_MACHINE
+  CALVE_RAISE_MACHINE
+  LAT_PULLDOWN
+  CHEST_FLY_MACHINE
+  CABLE_MACHINE
+  SMITH_MACHINE
+  HAMMER_STRENGTH_MACHINE
+  BARBELL
+  PREACHER_CURL_BENCH
+  TRICEP_DIP_MACHINE
+  LEVER_ROW_MACHINE
+}
+
+// Functional Training Equipment
+enum FunctionalEquipment {
+  BATTLE_ROPES
+  KETTLEBELLS
+  MEDICINE_BALLS
+  SANDBAGS
+  BOSU_BALL
+  TRX_SUSPENSION_TRAINER
+  SLAM_BALLS
+  AGILITY_LADDERS
+  PLYO_BOXES
+}
+
+// Miscellaneous Equipment
+enum MiscEquipment {
+  MAT
+  RESISTANCE_BAND
+  FOAM_ROLLER
+  JUMP_ROPE
+  AB_WHEEL
+  STABILITY_BALL
+  WEIGHT_VEST
+  HAND_GRIPPER
+  PULLUP_BAR
+}
+
+enum Status {
+  APPROVED
+  PENDING
+  REJECTED
+}
+
 model User {
-  id        String  @id @default(cuid())
-  name      String
-  email     String  @unique
-  image String?
-  password  String? @db.Text
-  bio       String?
-  location  Json? // storing UserAddress as JSON
-  gender    Gender?
-  role      Role    @default(user)
-  emailVerified  DateTime?
-  reviewCount      Int      @default(0)
-  gymRequestsCount Int      @default(0)
+  id               String    @id @default(cuid())
+  name             String
+  email            String    @unique
+  image            String?
+  password         String?   @db.Text
+  bio              String?
+  location         Json? // storing UserAddress as JSON
+  gender           Gender?
+  role             Role      @default(user)
+  emailVerified    DateTime?
+  reviewCount      Int       @default(0)
+  gymRequestsCount Int       @default(0)
   avgRatingGiven   Float?
-  favorites        String[] @default([])
+  favorites        String[]  @default([])
 
   isVerified Boolean   @default(false)
   lastLogin  DateTime?
@@ -47,7 +157,8 @@ model User {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  Account Account[]
+  Account    Account[]
+  GymRequest GymRequest[]
 }
 
 model Account {
@@ -69,4 +180,26 @@ model Account {
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@id([provider, providerAccountId])
+}
+
+model GymRequest {
+  id                  Int                   @id @default(autoincrement())
+  requestingUser      String
+  gymName             String
+  description         String
+  address             Json
+  gymType             GymType
+  genderSegregation   GenderSegregation
+  phoneNumber         String                @db.VarChar(15)
+  timings             Json
+  amenities           Amenity[]
+  membershipPlans     Json
+  cardioEquipment     CardioEquipment[]
+  strengthEquipment   StrengthEquipment[]
+  functionalEquipment FunctionalEquipment[]
+  miscEquipment       MiscEquipment[]
+  images              Json
+  createdAt           DateTime              @default(now())
+  status              Status                @default(PENDING)
+  user                User                  @relation(fields: [requestingUser], references: [id], onDelete: Cascade)
 }
