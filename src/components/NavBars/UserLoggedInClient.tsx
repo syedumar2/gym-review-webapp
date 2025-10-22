@@ -48,6 +48,11 @@ const UserLoggedInClient = ({ user }: { user: any }) => {
           <DropdownMenuItem>
             <Link href="/dashboard/requests">My Gym Requests</Link>
           </DropdownMenuItem>
+          {user.role === "admin" && (
+            <DropdownMenuItem>
+              <Link href="/admin/users">Admin Panel</Link>
+            </DropdownMenuItem>
+          )}
           <DropdownMenuItem>
             <form action={handleSignOut}>
               <button type="submit" className="text-red">

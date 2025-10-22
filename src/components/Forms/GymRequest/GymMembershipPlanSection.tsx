@@ -16,9 +16,10 @@ import { Controller, useFieldArray } from "react-hook-form";
 type Props = {
   control: any;
   errors: any;
+  loading?: boolean;
 };
 
-const GymMembershipPlanSection = ({ control, errors }: Props) => {
+const GymMembershipPlanSection = ({ control, errors, loading = false }: Props) => {
   const { fields, append, remove } = useFieldArray({
     control,
     name: "membershipPlans",
@@ -38,7 +39,9 @@ const GymMembershipPlanSection = ({ control, errors }: Props) => {
             <Controller
               name={`membershipPlans.${index}.planName`}
               control={control}
-              render={({ field }) => <Input {...field} className="mt-2" />}
+              render={({ field }) => (
+                <Input {...field} className="mt-2" disabled={loading} />
+              )}
             />
             {errors.membershipPlans?.[index]?.planName && (
               <p className="text-red-500">
@@ -55,7 +58,11 @@ const GymMembershipPlanSection = ({ control, errors }: Props) => {
                 control={control}
                 name={`membershipPlans.${index}.planType`}
                 render={({ field }) => (
-                  <Select onValueChange={field.onChange} value={field.value}>
+                  <Select
+                    onValueChange={field.onChange}
+                    value={field.value}
+                    disabled={loading}
+                  >
                     <SelectTrigger className="w-full mt-2">
                       <SelectValue placeholder="Select Plan Type" />
                     </SelectTrigger>
@@ -81,6 +88,7 @@ const GymMembershipPlanSection = ({ control, errors }: Props) => {
                     value={field.value ?? 0}
                     onChange={(e) => field.onChange(Number(e.target.value))}
                     className="mt-1"
+                    disabled={loading}
                   />
                 )}
               />
@@ -99,6 +107,7 @@ const GymMembershipPlanSection = ({ control, errors }: Props) => {
               type="button"
               variant="destructive"
               onClick={() => remove(index)}
+              disabled={loading}
             >
               <Trash /> Remove Membership plan
             </Button>
@@ -118,6 +127,7 @@ const GymMembershipPlanSection = ({ control, errors }: Props) => {
               perks: [""],
             })
           }
+          disabled={loading}
         >
           <Plus />
           Add Plan

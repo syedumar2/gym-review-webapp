@@ -3,11 +3,14 @@ import { Label } from "@/components/ui/label";
 import { Amenity } from "@/generated/prisma/client";
 import { AMENITY_LABELS } from "@/types/gym";
 import { Controller } from "react-hook-form";
+
 type Props = {
   control: any;
   errors: any;
+  loading: boolean;
 };
-const GymAmenitiesSection = ({ control, errors }: Props) => {
+
+const GymAmenitiesSection = ({ control, errors, loading }: Props) => {
   const renderAmenitiesCheckBoxes = (
     enumObj: Record<string, string>,
     labelMap: Record<string, string>
@@ -23,6 +26,7 @@ const GymAmenitiesSection = ({ control, errors }: Props) => {
             <div key={key} className="flex items-center space-x-2">
               <Checkbox
                 checked={checked}
+                disabled={loading}
                 onCheckedChange={(isChecked) => {
                   const newValue = isChecked
                     ? [...(field.value || []), key]
@@ -38,6 +42,7 @@ const GymAmenitiesSection = ({ control, errors }: Props) => {
         }}
       />
     ));
+
   return (
     <div>
       <Label className="mb-2">Amenities</Label>

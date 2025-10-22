@@ -1,7 +1,7 @@
 "use client";
 import { CldUploadWidget } from "next-cloudinary";
 import { ImageData } from "@/types/gym";
-import { Dispatch, SetStateAction, useState } from "react";
+import { Dispatch, SetStateAction } from "react";
 
 import { CircleX, File } from "lucide-react";
 
@@ -13,19 +13,19 @@ import { Label } from "../ui/label";
 const GymImageUploadSection = ({
   images,
   setImages,
+  loading = false,
 }: {
   images: ImageData[];
   setImages: Dispatch<SetStateAction<ImageData[]>>;
+  loading?: boolean;
 }) => {
-
   const handleRemoveImage = async (public_id: string) => {
     try {
       setImages((prev) => prev.filter((img) => img.public_id !== public_id));
       const response = await deleteImage(public_id);
 
-      // Remove from state if deletion succeeds
       if (!response.success) {
-        console.error("Image deletion from cloudinary failed! ");
+        console.error("Image deletion from cloudinary failed!");
       }
     } catch (error) {
       console.error("Error deleting image:", error);
@@ -36,7 +36,7 @@ const GymImageUploadSection = ({
     <div className="space-y-4">
       <Label>Gym Images</Label>
       <p className="text-sm text-muted-foreground italic">
-        These will be displayed for your gym when your request is approved{" "}
+        These will be displayed for your gym when your request is approved
       </p>
 
       {/* Cloudinary Upload Widget */}
@@ -45,7 +45,7 @@ const GymImageUploadSection = ({
           sources: ["local", "url", "google_drive", "camera"],
           multiple: true,
           folder: "gym_images",
-          resourceType: "image", // only images
+          resourceType: "image",
           clientAllowedFormats: ["jpg", "jpeg", "png", "webp"],
         }}
         uploadPreset="gym_review_app"
@@ -67,10 +67,11 @@ const GymImageUploadSection = ({
             size="sm"
             variant="secondary"
             className="gap-1"
-            onClick={() => open()}
+            onClick={() => !loading && open()}
+            disabled={loading}
           >
             <File className="w-4 h-4" />
-            Upload Images
+            {loading ? "Uploading..." : "Upload Images"}
           </Button>
         )}
       </CldUploadWidget>
@@ -96,7 +97,7 @@ const GymImageUploadSection = ({
               type="button"
               className="absolute top-0 right-0 bg-red-700 text-white rounded-full p-1"
               size="sm"
-              variant={undefined}
+              disabled={loading}
               onClick={() => handleRemoveImage(img.public_id)}
             >
               <CircleX />

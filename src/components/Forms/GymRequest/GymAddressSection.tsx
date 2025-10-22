@@ -6,9 +6,10 @@ import { Controller } from "react-hook-form";
 type Props = {
   errors: any;
   control: any;
+  loading: boolean;
 };
 
-const GymAddressSection = ({ errors, control }: Props) => {
+const GymAddressSection = ({ errors, control, loading }: Props) => {
   return (
     <>
       {/* Address */}
@@ -20,7 +21,7 @@ const GymAddressSection = ({ errors, control }: Props) => {
           name="address"
           control={control}
           render={({ field }) => (
-            <Input id="address" {...field} />
+            <Input id="address" disabled={loading} {...field} />
           )}
         />
         {errors.address && (
@@ -38,7 +39,7 @@ const GymAddressSection = ({ errors, control }: Props) => {
             name="city"
             control={control}
             render={({ field }) => (
-              <Input id="city" {...field} />
+              <Input id="city" disabled={loading} {...field} />
             )}
           />
           {errors.city && (
@@ -54,7 +55,7 @@ const GymAddressSection = ({ errors, control }: Props) => {
             name="state"
             control={control}
             render={({ field }) => (
-              <Input id="state" {...field} />
+              <Input id="state" disabled={loading} {...field} />
             )}
           />
           {errors.state && (
@@ -72,7 +73,12 @@ const GymAddressSection = ({ errors, control }: Props) => {
           name="phone"
           control={control}
           render={({ field }) => (
-            <PhoneInput id="phone" value={field.value} onChange={field.onChange} />
+            <PhoneInput
+              id="phone"
+              value={field.value}
+              onChange={field.onChange}
+              disabled={loading}
+            />
           )}
         />
         {errors.phone && (

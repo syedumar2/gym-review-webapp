@@ -26,6 +26,8 @@ import Socials from "./Buttons/Socials"
 import { EmptyPage } from "./Error/EmptyPage"
 import GymRequestFormComponent from "./Forms/GymRequestFormComponent"
 import { ImageCarousel } from "./ImageCarousel/ImageCarousel"
+import { Loading } from "./Overlays/Loading"
+import { LoadingOverlay } from "./Overlays/LoadingOverlay"
 
 export {
     Header,
@@ -55,7 +57,10 @@ export {
     Socials,
     EmptyPage,
     GymRequestFormComponent,
-    ImageCarousel
+    ImageCarousel,
+    Loading,
+    LoadingOverlay,
+
 
 
 

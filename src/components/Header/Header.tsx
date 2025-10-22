@@ -15,7 +15,8 @@ const Navbar = ({ session }: NavbarProps) => {
     <header>
       {pathname?.includes("/listings") ||
       pathname?.includes("/details") ||
-      pathname?.includes("/dashboard") ? (
+      pathname?.includes("/dashboard") ||
+      pathname?.includes("/admin")  ? (
         <ListingPageNav isOpen={isOpen} setIsOpen={setIsOpen} session={session} />
       ) : (
         <LandingPageNav isOpen={isOpen} setIsOpen={setIsOpen} />

@@ -15,9 +15,10 @@ import {
 type Props = {
   control: any;
   errors: any;
+  loading: boolean;
 };
 
-const GymBasicInfoSection = ({ control, errors }: Props) => {
+const GymBasicInfoSection = ({ control, errors, loading }: Props) => {
   const renderEnumOptions = (
     enumObj: Record<string, string>,
     labelMap: Record<string, string>
@@ -38,9 +39,13 @@ const GymBasicInfoSection = ({ control, errors }: Props) => {
         <Controller
           name="name"
           control={control}
-          render={({ field }) => <Input id="name" {...field} />}
+          render={({ field }) => (
+            <Input id="name" disabled={loading} {...field} />
+          )}
         />
-        {errors.name && <p className="text-red-500 text-sm">{errors.name.message}</p>}
+        {errors.name && (
+          <p className="text-red-500 text-sm">{errors.name.message}</p>
+        )}
       </div>
 
       {/* Gym Type + Gender Segregation */}
@@ -54,15 +59,23 @@ const GymBasicInfoSection = ({ control, errors }: Props) => {
             name="type"
             control={control}
             render={({ field }) => (
-              <Select onValueChange={field.onChange} value={field.value}>
-                <SelectTrigger className="w-full">
+              <Select
+                onValueChange={field.onChange}
+                value={field.value}
+                disabled={loading}
+              >
+                <SelectTrigger className="w-full" disabled={loading}>
                   <SelectValue placeholder="Select Gym Type" />
                 </SelectTrigger>
-                <SelectContent className="bg-primary">{renderEnumOptions(GymType, GYM_TYPE_LABELS)}</SelectContent>
+                <SelectContent className="bg-primary">
+                  {renderEnumOptions(GymType, GYM_TYPE_LABELS)}
+                </SelectContent>
               </Select>
             )}
           />
-          {errors.type && <p className="text-red-500 text-sm">{errors.type.message}</p>}
+          {errors.type && (
+            <p className="text-red-500 text-sm">{errors.type.message}</p>
+          )}
         </div>
 
         {/* Gender Segregation */}
@@ -74,18 +87,27 @@ const GymBasicInfoSection = ({ control, errors }: Props) => {
             name="genderSegregation"
             control={control}
             render={({ field }) => (
-              <Select onValueChange={field.onChange} value={field.value}>
-                <SelectTrigger className="w-full">
+              <Select
+                onValueChange={field.onChange}
+                value={field.value}
+                disabled={loading}
+              >
+                <SelectTrigger className="w-full" disabled={loading}>
                   <SelectValue placeholder="Select Gender Segregation" />
                 </SelectTrigger>
                 <SelectContent className="bg-primary">
-                  {renderEnumOptions(GenderSegregation, GENDER_SEGREGATION_LABELS)}
+                  {renderEnumOptions(
+                    GenderSegregation,
+                    GENDER_SEGREGATION_LABELS
+                  )}
                 </SelectContent>
               </Select>
             )}
           />
           {errors.genderSegregation && (
-            <p className="text-red-500 text-sm">{errors.genderSegregation.message}</p>
+            <p className="text-red-500 text-sm">
+              {errors.genderSegregation.message}
+            </p>
           )}
         </div>
       </div>
@@ -98,7 +120,9 @@ const GymBasicInfoSection = ({ control, errors }: Props) => {
         <Controller
           name="description"
           control={control}
-          render={({ field }) => <Textarea id="description" {...field} />}
+          render={({ field }) => (
+            <Textarea id="description" disabled={loading} {...field} />
+          )}
         />
         {errors.description && (
           <p className="text-red-500 text-sm">{errors.description.message}</p>

@@ -4,9 +4,10 @@ import { Label } from "@/components/ui/label";
 
 type Props = {
   control: any;
+  loading: boolean;
 };
 
-const GymTimingsSections = ({ control }: Props) => {
+const GymTimingsSections = ({ control, loading }: Props) => {
   return (
     <div className="space-y-4">
       {/* Morning Timings */}
@@ -18,7 +19,9 @@ const GymTimingsSections = ({ control }: Props) => {
             <Controller
               name="morningStart"
               control={control}
-              render={({ field }) => <Input type="time" {...field} />}
+              render={({ field }) => (
+                <Input type="time" disabled={loading} {...field} />
+              )}
             />
           </div>
           <div className="w-1/2">
@@ -26,7 +29,9 @@ const GymTimingsSections = ({ control }: Props) => {
             <Controller
               name="morningEnd"
               control={control}
-              render={({ field }) => <Input type="time" {...field} />}
+              render={({ field }) => (
+                <Input type="time" disabled={loading} {...field} />
+              )}
             />
           </div>
         </div>
@@ -41,7 +46,9 @@ const GymTimingsSections = ({ control }: Props) => {
             <Controller
               name="eveningStart"
               control={control}
-              render={({ field }) => <Input type="time" {...field} />}
+              render={({ field }) => (
+                <Input type="time" disabled={loading} {...field} />
+              )}
             />
           </div>
           <div className="w-1/2">
@@ -49,7 +56,9 @@ const GymTimingsSections = ({ control }: Props) => {
             <Controller
               name="eveningEnd"
               control={control}
-              render={({ field }) => <Input type="time" {...field} />}
+              render={({ field }) => (
+                <Input type="time" disabled={loading} {...field} />
+              )}
             />
           </div>
         </div>

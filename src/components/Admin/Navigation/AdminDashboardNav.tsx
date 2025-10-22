@@ -1,9 +1,9 @@
 "use client";
 
+import { Ban, Menu, MessageCircleWarning, Star, User, X } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
-import { User, Star, Dumbbell, Menu, X, Ban, MessageCircleWarning } from "lucide-react";
 
 export default function AdminDashboardNav() {
   const pathname = usePathname();

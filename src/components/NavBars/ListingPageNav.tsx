@@ -19,7 +19,6 @@ const ListingPageNav = ({
 }) => {
   const pathname = usePathname();
   const isLoggedIn = !!session?.user;
-  console.log("Pathname includes dashboard",pathname?.includes("/dashboard"))
   return (
     <>
       <nav className="bg-accent">
@@ -57,7 +56,7 @@ const ListingPageNav = ({
             <div></div>
           </div>
           {/* Desktop Buttons */}
-          {pathname?.includes("/dashboard") ? (
+          {pathname?.includes("/dashboard") || pathname?.includes("/admin") ? (
             isLoggedIn ? (
               <UserLoggedInClient user={session.user} />
             ) : (

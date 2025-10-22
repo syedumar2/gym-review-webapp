@@ -4,6 +4,7 @@ const inter = Inter({ subsets: ["latin"] });
 import "./globals.css";
 import SessionWrapper from "../../components/SessionWrapper";
 import { Toaster } from "sonner";
+import QueryProvider from "@/components/QueryProvider";
 
 export default function RootLayout({ children }: any) {
   return (
@@ -18,7 +19,8 @@ export default function RootLayout({ children }: any) {
               enableSystem
               disableTransitionOnChange
             >
-              {children}
+              <QueryProvider>{children}</QueryProvider>
+              
             </ThemeProvider>
             <Toaster richColors position="top-center" />
           </body>

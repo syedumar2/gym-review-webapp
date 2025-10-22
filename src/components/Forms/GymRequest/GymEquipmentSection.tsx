@@ -18,8 +18,10 @@ import { Controller } from "react-hook-form";
 type Props = {
   control: any;
   errors: any;
+  loading: boolean;
 };
-const GymEquipmentSection = ({ control, errors }: Props) => {
+
+const GymEquipmentSection = ({ control, errors, loading }: Props) => {
   const renderEquipmentCheckboxes = (
     fieldName: keyof GymFormInput,
     enumObj: Record<string, string>,
@@ -36,6 +38,7 @@ const GymEquipmentSection = ({ control, errors }: Props) => {
             <div key={key} className="flex items-center space-x-2">
               <Checkbox
                 checked={checked}
+                disabled={loading}
                 onCheckedChange={(isChecked) => {
                   const newValue = isChecked
                     ? [...(field.value || []), key]
@@ -51,6 +54,7 @@ const GymEquipmentSection = ({ control, errors }: Props) => {
         }}
       />
     ));
+
   return (
     <>
       {[
@@ -90,6 +94,11 @@ const GymEquipmentSection = ({ control, errors }: Props) => {
           </div>
         </div>
       ))}
+      {errors && Object.keys(errors).length > 0 && (
+        <p className="text-red-500 text-sm">
+          Please review the highlighted fields above.
+        </p>
+      )}
     </>
   );
 };

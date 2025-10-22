@@ -20,7 +20,8 @@ declare module "next-auth" {
 export const { auth, handlers, signIn, signOut } = NextAuth({
   pages:{
     signIn: "/login",
-    error:"/error"
+    error:"/error",
+    
   },
   events: {
     async linkAccount({ user }) {
@@ -30,9 +31,6 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
   },
   callbacks: {
     async session({ token, session }) {
-      console.log({
-        sessionToken: token
-      })
       if (token.sub && session.user) {
         session.user.id = token.sub;
       }

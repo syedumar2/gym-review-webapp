@@ -9,7 +9,7 @@ import { UserUpdateInput } from "@/schemas/UpdateUserDataScehma";
 
 
 export async function handleSignOut() {
-  await signOut();
+  await signOut({ redirectTo: "/login" });
 }
 
 type UserDataResponse = ApiResponse<User>;
