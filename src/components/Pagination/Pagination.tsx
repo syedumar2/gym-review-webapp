@@ -37,8 +37,8 @@ const Pagination = ({
     <div className={`flex items-center gap-2 ${className}`}>
       {/* Previous button */}
       <Button
-        className="hover:cursor-pointer bg-secondary text-white disabled:opacity-50"
-        variant={undefined}
+        className="hover:cursor-pointer bg-secondary text-white disabled:opacity-50 "
+        variant={"secondary"}
         size={undefined}
         disabled={currentPage === 1}
         onClick={() =>
@@ -55,26 +55,37 @@ const Pagination = ({
             ...
           </span>
         ) : (
-          <Button
-            key={idx}
-            onClick={() => typeof page === "number" && onPageChange(page)}
-            className={`hover:cursor-pointer ${
-              page === currentPage
-                ? "bg-black text-white" // active page
-                : "bg-secondary text-white" // inactive
-            }`}
-            variant={undefined}
-            size={undefined}
-          >
-            {page}
-          </Button>
+          <div key={idx}>
+            <div className={page === currentPage ? "flex flex-col items-center mt-1 " : ""}>
+              <Button
+                key={idx}
+                onClick={() => typeof page === "number" && onPageChange(page)}
+                className={`hover:cursor-pointer  ${
+                  page === currentPage
+                    ? "bg-secondary text-white " // active page
+                    : "bg-secondary text-white" // inactive
+                }`}
+                variant={"secondary"}
+                size={undefined}
+              >
+                {page}
+              </Button>
+              <div
+                className={
+                  page === currentPage
+                    ? " bg-secondary border-t-secondary w-8 h-0.5 mt-1   "
+                    : "hidden"
+                }
+              ></div>
+            </div>
+          </div>
         )
       )}
 
       {/* Next button */}
       <Button
-        className="hover:cursor-pointer bg-secondary text-white disabled:opacity-50"
-        variant={undefined}
+        className="hover:cursor-pointer bg-secondary text-white disabled:opacity-50 "
+        variant={"secondary"}
         size={undefined}
         disabled={currentPage === totalPages}
         onClick={() =>

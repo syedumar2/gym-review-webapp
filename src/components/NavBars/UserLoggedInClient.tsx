@@ -16,7 +16,7 @@ import { DarkModeToggle } from "../Buttons/DarkModeToggle";
 
 const UserLoggedInClient = ({ user }: { user: any }) => {
   return (
-    <div className="flex items-center gap-2 ">
+    <div className="flex items-center gap-4 ">
       <div className="flex items-center gap-2.5 w-full">
         <Avatar className="w-9 h-9">
           {" "}
@@ -27,16 +27,15 @@ const UserLoggedInClient = ({ user }: { user: any }) => {
           </AvatarFallback>
         </Avatar>
         <span className="whitespace-nowrap text-base ">{user?.name}</span>
-      </div>
-
+        
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <button className=" rounded hover:bg-gray-100 mr-6 ">
+          <button className=" rounded hover:bg-gray-100 ">
             <ChevronDown className="size-4 " />
           </button>
         </DropdownMenuTrigger>
 
-        <DropdownMenuContent className="bg-white">
+        <DropdownMenuContent className="bg-primary">
           <DropdownMenuLabel>My Profile</DropdownMenuLabel>
           <DropdownMenuSeparator />
           <DropdownMenuItem>
@@ -62,9 +61,11 @@ const UserLoggedInClient = ({ user }: { user: any }) => {
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
-      <div className="mr-4">
-        <DarkModeToggle />
       </div>
+
+      
+        <DarkModeToggle />
+      
     </div>
   );
 };

@@ -53,7 +53,7 @@ const ListingPageNav = ({
                 </div>
               </button>
             </div>
-            <div></div>
+       
           </div>
           {/* Desktop Buttons */}
           {pathname?.includes("/dashboard") || pathname?.includes("/admin") ? (

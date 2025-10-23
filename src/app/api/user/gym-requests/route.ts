@@ -1,27 +1,19 @@
-import { NextRequest, NextResponse } from "next/server";
-
 import { ApiResponse } from "@/types/api";
-import { getGymRequests } from "../../../../../services/userService";
+import { NextRequest, NextResponse } from "next/server";
+import { userService } from "../../../../../services";
 
-export async function GET(req: NextRequest) {
+export async function POST(req: NextRequest) {
   try {
-    const { searchParams } = new URL(req.url);
+    const body = await req.json();
 
-    const userId = searchParams.get("userId");
-    const page = parseInt(searchParams.get("page") || "1");
-    const pageSize = parseInt(searchParams.get("pageSize") || "10");
-    const sortField = searchParams.get("sortField") || undefined;
-    const sortOrder = (searchParams.get("sortOrder") as "asc" | "desc") || undefined;
+    const {
+      userId,
+      page = 1,
+      pageSize = 10,
+      sort = [], // [{ field, order }]
+    } = body;
 
-    if (!userId) {
-      const errorResponse: ApiResponse = {
-        success: false,
-        error: "userId is required",
-      };
-      return NextResponse.json(errorResponse, { status: 400 });
-    }
-
-    const result = await getGymRequests(userId, page, pageSize, sortField, sortOrder);
+    const result = await userService.getGymRequests(userId, page, pageSize, sort);
 
     const response: ApiResponse<typeof result> = {
       success: true,

@@ -92,6 +92,7 @@ export default function GymRequestFormComponent() {
 
       toast.success(res.message || "Gym request submitted successfully!");
       router.push("/dashboard/requests"); // TODO: change redirect to submission details page
+      //TODO: retest gym request component
     } catch (err: any) {
       console.error("Error submitting gym request:", err);
       toast.error(err?.message || "Something went wrong. Please try again.");
@@ -166,4 +167,4 @@ export default function GymRequestFormComponent() {
   );
 }
 
-//TODO: Pass Requesting User, Images
+

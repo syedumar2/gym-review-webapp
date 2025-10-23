@@ -38,7 +38,6 @@ const renderAmenities = (
 };
 
 const GymSubmissionDetails = ({ gym }: { gym: ParsedGymRequest }) => {
-  console.log("Membership plan", gym.membershipPlans);
   return (
     <section className="p-4 md:p-8 bg-primary min-h-screen">
       {/* Title */}

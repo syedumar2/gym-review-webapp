@@ -6,9 +6,10 @@
  */
 
 import { GymRequest, Prisma, User } from "@/generated/prisma/client";
-import prisma from "../lib/prisma";
-import bcrypt from "bcryptjs";
+import { Page, SortParam } from "@/types/api";
 import { GymRequestObjectCreationInput } from "@/types/gym";
+import bcrypt from "bcryptjs";
+import prisma from "../lib/prisma";
 
 
 
@@ -115,6 +116,8 @@ export const createGymRequest = async (data: GymRequestObjectCreationInput): Pro
   return prisma.gymRequest.create({ data });
 }
 
+
+
 /**
  * Fetches paginated and sorted gym requests for a given user.
  *
@@ -130,15 +133,39 @@ export const createGymRequest = async (data: GymRequestObjectCreationInput): Pro
  *  - `totalPages`: Total number of pages
  *  - `totalRequests`: Total number of gym requests for the user
  */
+
 export const getGymRequests = async (
   userId: string,
   page: number,
   pageSize: number,
-  sortField?: string,
-  sortOrder?: "asc" | "desc"
+  sort: SortParam[]
 ): Promise<Page<GymRequest>> => {
   const safePage = Math.max(1, page);
   const safePageSize = Math.max(1, pageSize);
+
+  // ✅ Whitelist sortable fields
+  const validSortFields: (keyof Prisma.GymRequestOrderByWithRelationInput)[] = [
+    "gymName",
+    "status",
+    "createdAt",
+  ];
+
+  // ✅ Sanitize sort array
+  const safeOrderBy = sort
+    .filter(
+      (s) =>
+        s.field &&
+        validSortFields.includes(s.field as any) &&
+        (s.order === "asc" || s.order === "desc")
+    )
+    .map((s) => ({
+      [s.field]: s.order,
+    }));
+
+  // ✅ Default fallback sort if none valid
+  if (safeOrderBy.length === 0) {
+    safeOrderBy.push({ createdAt: "desc" });
+  }
 
   const totalRequests = await prisma.gymRequest.count({
     where: { requestingUser: userId },
@@ -147,8 +174,8 @@ export const getGymRequests = async (
   const gymRequests = await prisma.gymRequest.findMany({
     skip: (safePage - 1) * safePageSize,
     take: safePageSize,
-    orderBy: { [sortField ?? "gymName"]: sortOrder ?? "asc" },
     where: { requestingUser: userId },
+    orderBy: safeOrderBy,
   });
 
   const totalPages = Math.ceil(totalRequests / safePageSize);
@@ -158,7 +185,7 @@ export const getGymRequests = async (
     page: safePage,
     pageSize: safePageSize,
     totalPages,
-    totalRequests,
+    totalElements: totalRequests,
   };
 };
 
@@ -167,11 +194,4 @@ export const getGymSubmissionDetailsById = async (id: number) => {
   return prisma.gymRequest.findUnique({ where: { id } })
 }
 
-export type Page<T = any> = {
-  data: T[];
-  page: number;
-  pageSize: number;
-  totalPages: number;
-  totalRequests: number;
-};
 

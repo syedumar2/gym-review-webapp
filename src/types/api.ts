@@ -5,3 +5,11 @@ export interface ApiResponse<T = any> {
   message?: string;
   error?: string;
 }
+export type SortParam = { field: string; order: "asc" | "desc" };
+export type Page<T = any> = {
+  data: T[];
+  page: number;
+  pageSize: number;
+  totalPages: number;
+  totalElements: number;
+};

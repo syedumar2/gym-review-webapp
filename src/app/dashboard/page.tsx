@@ -16,5 +16,3 @@ const page = () => {
 
 export default page;
 //TODO: Complete authentication (LEFT HALFWAY)
-//TODO: Build Gym request CRUD functions
-//TODO: Integrate Cloudinary first
