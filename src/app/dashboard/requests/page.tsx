@@ -1,4 +1,4 @@
-import { Footer, GymRequests, Header, UserDashboardNav } from '@/components'
+import { Footer, GymRequests, UserDashboardNav } from '@/components'
 import ServerHeader from '@/components/Header'
 
 const page = () => {

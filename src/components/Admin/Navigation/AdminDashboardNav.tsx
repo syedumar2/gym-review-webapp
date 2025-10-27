@@ -1,6 +1,14 @@
 "use client";
 
-import { Ban, Menu, MessageCircleWarning, Star, User, X } from "lucide-react";
+import {
+  Ban,
+  Dumbbell,
+  Menu,
+  MessageCircleWarning,
+  Star,
+  User,
+  X,
+} from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
@@ -25,10 +33,15 @@ export default function AdminDashboardNav() {
       label: "Black List",
       icon: <Ban className="w-4 h-4" />,
     },
-     {
+    {
       href: "/admin/reported",
       label: "Reported Reviews",
       icon: <MessageCircleWarning className="w-4 h-4" />,
+    },
+    {
+      href: "/admin/gyms",
+      label: "Active Gyms",
+      icon: <Dumbbell className="w-4 h-4" />,
     },
   ];
 

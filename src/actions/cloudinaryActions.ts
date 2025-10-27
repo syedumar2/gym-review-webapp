@@ -14,10 +14,8 @@ export async function deleteImage(public_id: string): Promise<ApiResponse<any>> 
     if (!public_id) {
         return ({ success: false, message: "Missing public_id" });
     }
-    console.log("pid spotted here", public_id)
     try {
         const result = await cloudinary.uploader.destroy(public_id);
-        console.log("result of operations was", result)
         return ({ success: true, data: result });
     } catch (error: any) {
         console.error("Cloudinary deletion error:", error);

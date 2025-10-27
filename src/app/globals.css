@@ -14,6 +14,7 @@
   --color-yellow: #FFFF00;
   --color-gray: #736F73;
   --color-red: #FF0000;
+ --color-green:#008000;
 
 }
 .dark {
@@ -23,6 +24,7 @@
   --color-black: #ffffff;
    --color-inverted:#000000;
     --color-gray: #ffffff;
+     --color-green: #008000;
   
 }
 

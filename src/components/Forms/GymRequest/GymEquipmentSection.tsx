@@ -17,11 +17,10 @@ import { Controller } from "react-hook-form";
 
 type Props = {
   control: any;
-  errors: any;
   loading: boolean;
 };
 
-const GymEquipmentSection = ({ control, errors, loading }: Props) => {
+const GymEquipmentSection = ({ control,  loading }: Props) => {
   const renderEquipmentCheckboxes = (
     fieldName: keyof GymFormInput,
     enumObj: Record<string, string>,
@@ -94,11 +93,7 @@ const GymEquipmentSection = ({ control, errors, loading }: Props) => {
           </div>
         </div>
       ))}
-      {errors && Object.keys(errors).length > 0 && (
-        <p className="text-red-500 text-sm">
-          Please review the highlighted fields above.
-        </p>
-      )}
+
     </>
   );
 };

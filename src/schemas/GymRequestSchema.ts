@@ -48,11 +48,11 @@ export const GymFormSchema = z.object({
     morningEnd: z.string().min(1, "Morning end time required"),
     eveningStart: z.string().optional(),
     eveningEnd: z.string().optional(),
-    amenities: z.array(z.enum(Amenity)).optional(),
-    cardioEquipment: z.array(z.enum(CardioEquipment)).optional(),
-    strengthEquipment: z.array(z.enum(StrengthEquipment)).optional(),
-    functionalEquipment: z.array(z.enum(FunctionalEquipment)).optional(),
-    miscEquipment: z.array(z.enum(MiscEquipment)).optional(),
+    amenities: z.array(z.enum(Amenity)).optional().default([]),
+    cardioEquipment: z.array(z.enum(CardioEquipment)).optional().default([]),
+    strengthEquipment: z.array(z.enum(StrengthEquipment)).optional().default([]),
+    functionalEquipment: z.array(z.enum(FunctionalEquipment)).optional().default([]),
+    miscEquipment: z.array(z.enum(MiscEquipment)).optional().default([]),
     membershipPlans: z.array(MembershipPlanSchema).min(1, "At least one plan is required"),
 
 

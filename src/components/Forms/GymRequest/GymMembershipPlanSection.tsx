@@ -19,7 +19,11 @@ type Props = {
   loading?: boolean;
 };
 
-const GymMembershipPlanSection = ({ control, errors, loading = false }: Props) => {
+const GymMembershipPlanSection = ({
+  control,
+  errors,
+  loading = false,
+}: Props) => {
   const { fields, append, remove } = useFieldArray({
     control,
     name: "membershipPlans",
@@ -28,6 +32,11 @@ const GymMembershipPlanSection = ({ control, errors, loading = false }: Props) =
   return (
     <div className="w-full">
       <Label>Membership Plans</Label>
+      {errors.membershipPlans?.root?.message && (
+        <p className="text-red-500 text-sm mb-2">
+          {errors.membershipPlans.root.message}
+        </p>
+      )}
       {fields.map((plan, index) => (
         <div
           key={plan.id}
@@ -74,6 +83,11 @@ const GymMembershipPlanSection = ({ control, errors, loading = false }: Props) =
                   </Select>
                 )}
               />
+              {errors.membershipPlans?.[index]?.planType?.message && (
+                <p className="text-red-500">
+                  {errors.membershipPlans?.[index]?.planType?.message}
+                </p>
+              )}
             </div>
 
             <div className="w-full">
@@ -92,13 +106,18 @@ const GymMembershipPlanSection = ({ control, errors, loading = false }: Props) =
                   />
                 )}
               />
+              {errors.membershipPlans?.[index]?.price?.message && (
+                <p className="text-red-500">
+                  {errors.membershipPlans?.[index]?.price?.message}
+                </p>
+              )}
             </div>
           </div>
 
           {/* Perks */}
           <div className="space-y-2 mt-4">
             <Label>Perks</Label>
-            <PerksFieldArray index={index} control={control} />
+            <PerksFieldArray errors={errors} index={index} control={control} />
           </div>
 
           {/* Remove button */}
@@ -133,6 +152,7 @@ const GymMembershipPlanSection = ({ control, errors, loading = false }: Props) =
           Add Plan
         </Button>
       </div>
+   
     </div>
   );
 };

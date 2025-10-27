@@ -6,7 +6,7 @@ import {
   PlanType,
 } from "@/schemas/GymRequestSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
+import { useForm, type Resolver } from "react-hook-form";
 import { Button } from "../ui/button";
 import GymImageUploadSection from "./GymImageUploadSection";
 import GymAddressSection from "./GymRequest/GymAddressSection";
@@ -23,10 +23,11 @@ import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { Loading } from "../Overlays/Loading";
 import { LoadingOverlay } from "../Overlays/LoadingOverlay";
+import { DevTool } from "@hookform/devtools";
 
 export default function GymRequestFormComponent() {
   const [images, setImages] = useState<ImageData[]>([]);
-  const { data: session, status } = useSession();
+  const { data: session, status } = useSession({ required: false });
   const [loading, setLoading] = useState(false);
   const router = useRouter();
   const {
@@ -35,7 +36,7 @@ export default function GymRequestFormComponent() {
     control,
   } = useForm<GymFormInput>({
     mode: "onTouched",
-    resolver: zodResolver(GymFormSchema),
+    resolver: zodResolver(GymFormSchema) as Resolver<GymFormInput>,
     defaultValues: {
       name: "",
       address: "",
@@ -59,8 +60,10 @@ export default function GymRequestFormComponent() {
       miscEquipment: [],
     },
   });
+  console.log(errors)
 
   const onSubmit = async (data: GymFormInput) => {
+    console.log(data);
     setLoading(true);
 
     try {
@@ -73,9 +76,8 @@ export default function GymRequestFormComponent() {
       // Guard: check if images are provided
       if (!images || images.length === 0) {
         toast.error("Please upload at least one image of the gym.");
-        return;
+        return; 
       }
-      console.log("Form submitted:", data);
 
       const res = await submitGymRequest(data, images, session.user.id);
 
@@ -91,8 +93,7 @@ export default function GymRequestFormComponent() {
       }
 
       toast.success(res.message || "Gym request submitted successfully!");
-      router.push("/dashboard/requests"); // TODO: change redirect to submission details page
-      //TODO: retest gym request component
+      router.push("/dashboard/requests"); 
     } catch (err: any) {
       console.error("Error submitting gym request:", err);
       toast.error(err?.message || "Something went wrong. Please try again.");
@@ -133,7 +134,7 @@ export default function GymRequestFormComponent() {
 
         <GymEquipmentSection
           control={control}
-          errors={errors}
+
           loading={loading}
         />
 
@@ -156,6 +157,8 @@ export default function GymRequestFormComponent() {
           loading={loading}
         />
 
+        <DevTool control={control} />
+
         <div className="flex w-full justify-end mt-4">
           {" "}
           <Button type="submit" variant={"secondary"} disabled={loading}>
@@ -166,5 +169,3 @@ export default function GymRequestFormComponent() {
     </section>
   );
 }
-
-

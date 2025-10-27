@@ -151,8 +151,11 @@ model User {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  Account    Account[]
-  GymRequest GymRequest[]
+  Account              Account[]
+  requestedGymRequests GymRequest[] @relation("RequestedGymRequests")
+  approvedGymRequests  GymRequest[] @relation("ApprovedGymRequests")
+  rejectedGymRequests  GymRequest[] @relation("RejectedGymRequests")
+  Gym                  Gym[]
 }
 
 model Account {
@@ -176,8 +179,6 @@ model Account {
   @@id([provider, providerAccountId])
 }
 
-
-
 model GymRequest {
   id                  Int                   @id @default(autoincrement())
   requestingUser      String
@@ -196,6 +197,40 @@ model GymRequest {
   miscEquipment       MiscEquipment[]
   images              Json
   createdAt           DateTime              @default(now())
-  status              Status                @default(PENDING)
-  user                User                  @relation(fields: [requestingUser], references: [id], onDelete: Cascade)
+  approvedAt          DateTime?
+  rejectedAt          DateTime?
+  rejectedByAdminId   String?
+  approvedByAdminId   String?
+
+  status    Status   @default(PENDING)
+  updatedAt DateTime?
+
+  reason          String?
+  approvedByAdmin User?   @relation("ApprovedGymRequests", fields: [approvedByAdminId], references: [id], onDelete: Cascade)
+  rejectedByAdmin User?   @relation("RejectedGymRequests", fields: [rejectedByAdminId], references: [id], onDelete: Cascade)
+
+  user User @relation("RequestedGymRequests", fields: [requestingUser], references: [id], onDelete: Cascade)
+}
+
+model Gym {
+  id                  Int                   @id @default(autoincrement())
+  approvedByAdminId   String
+  gymName             String
+  description         String
+  address             Json
+  gymType             GymType
+  genderSegregation   GenderSegregation
+  phoneNumber         String                @db.VarChar(15)
+  timings             Json
+  amenities           Amenity[]
+  membershipPlans     Json
+  cardioEquipment     CardioEquipment[]
+  strengthEquipment   StrengthEquipment[]
+  functionalEquipment FunctionalEquipment[]
+  miscEquipment       MiscEquipment[]
+  images              Json
+  createdAt           DateTime              @default(now())
+  updatedAt           DateTime              @default(now()) @updatedAt
+
+  approvedByAdmin User @relation(fields: [approvedByAdminId], references: [id], onDelete: Cascade)
 }

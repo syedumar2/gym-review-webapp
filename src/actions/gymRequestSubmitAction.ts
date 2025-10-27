@@ -1,6 +1,6 @@
 "use server"
 
-import { Prisma, Status } from "@/generated/prisma";
+import { GymRequest, Prisma, Status } from "@/generated/prisma";
 import { GymFormInput } from "@/schemas/GymRequestSchema";
 import { ApiResponse } from "@/types/api";
 import { userService } from "../../services";
@@ -11,7 +11,7 @@ export async function submitGymRequest(
     data: GymFormInput,
     images: ImageData[],
     userId: string
-): Promise<ApiResponse<any>> {
+): Promise<ApiResponse<GymRequest|null>> {
     try {
         const formattedData = {
             gymName: data.name,

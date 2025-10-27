@@ -11,6 +11,7 @@ import { EmptyPage } from "../Error/EmptyPage";
 import { Loading } from "../Overlays/Loading";
 import Pagination from "../Pagination/Pagination";
 import { Button } from "../ui/button";
+import { HoverCard, HoverCardContent, HoverCardTrigger } from "../ui/hover-card";
 
 
 
@@ -205,14 +206,83 @@ const GymRequests = () => {
                 <td className="p-3 border-b">
                   {req.createdAt.toLocaleDateString()}
                 </td>
-                <td className="p-3 border-b">
-                  <span
-                    className={`px-2 py-1 rounded-full text-sm border ${
-                      statusColors[req.status]
-                    }`}
-                  >
-                    {req.status}
-                  </span>
+            <td className="p-3">
+                  <HoverCard>
+                    <HoverCardTrigger asChild>
+                      <span
+                        className={`px-3 py-1 rounded-full text-xs font-semibold border ${
+                          statusColors[req.status]
+                        }`}
+                      >
+                        {req.status}
+                      </span>
+                    </HoverCardTrigger>
+                    <HoverCardContent className="w-80 bg-accent/80 backdrop-blur-md border border-accent-foreground/10 shadow-md p-4 rounded-2xl">
+                      {req.status === "APPROVED" ? (
+                        <div className="space-y-2">
+                          <h4 className="text-sm font-semibold text-emerald-600 flex items-center gap-1">
+                            ✅ Approved
+                          </h4>
+                          <div className="text-sm">
+                            <span className="font-medium text-muted-foreground">
+                              Date:
+                            </span>{" "}
+                            {req?.approvedAt
+                              ? new Date(req.approvedAt).toLocaleDateString(
+                                  "en-GB",
+                                  {
+                                    day: "2-digit",
+                                    month: "short",
+                                    year: "numeric",
+                                  }
+                                )
+                              : "—"}
+                          </div>
+                          <div className="text-xs text-muted-foreground">
+                            Approved by{" "}
+                            <span className="font-medium text-foreground">
+                              {req?.approvedByAdminId || "Unknown"}
+                            </span>
+                          </div>
+                        </div>
+                      ) : (
+                        <div className="space-y-2">
+                          <h4 className="text-sm font-semibold text-red-600 flex items-center gap-1">
+                            ❌ Rejected
+                          </h4>
+                          <div className="text-sm">
+                            <span className="font-medium text-muted-foreground">
+                              Date:
+                            </span>{" "}
+                            {req?.rejectedAt
+                              ? new Date(req.rejectedAt).toLocaleDateString(
+                                  "en-GB",
+                                  {
+                                    day: "2-digit",
+                                    month: "short",
+                                    year: "numeric",
+                                  }
+                                )
+                              : "—"}
+                          </div>
+                          {req?.reason && (
+                            <div className="text-sm text-muted-foreground border-l-2 border-red-400 pl-2">
+                              <span className="font-medium text-foreground">
+                                Reason:
+                              </span>{" "}
+                              {req.reason}
+                            </div>
+                          )}
+                          <div className="text-xs text-muted-foreground">
+                            Rejected by{" "}
+                            <span className="font-medium text-foreground">
+                              {req?.rejectedByAdminId || "Unknown"}
+                            </span>
+                          </div>
+                        </div>
+                      )}
+                    </HoverCardContent>
+                  </HoverCard>
                 </td>
                 <td className="p-3 border-b">
                   <Link

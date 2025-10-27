@@ -26,7 +26,6 @@ export default {
                     const user = await userService.getUserByEmail(email);
                     if (!user || !user.password) return null; //not gonna allow google/github logged in users
                     const passwordsMatch = await bcrypt.compare(password, user.password);
-                    console.log("Passwords match", passwordsMatch)
                     
                     if (passwordsMatch) return user;
 

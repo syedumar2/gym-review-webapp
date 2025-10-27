@@ -1,20 +1,22 @@
 "use client";
 import Pagination from "@/components/Pagination/Pagination";
-import { useQuery } from "@tanstack/react-query";
-import {
-  AlertCircle,
-  ArrowDown,
-  ArrowUp,
-  ArrowUpDown,
-
-} from "lucide-react";
-import { useEffect, useState } from "react";
-
+import { AlertCircle, ArrowDown, ArrowUp, ArrowUpDown } from "lucide-react";
+import { useState } from "react";
 import { EmptyPage, Loading } from "@/components";
-import { GymRequest } from "@/generated/prisma";
-import { ApiResponse, Page, SortParam } from "@/types/api";
 import GymSubmissionActionDialog from "../Dialog/GymSubmissionActionDialog";
 import Link from "next/link";
+import { ApiResponse, SortParam } from "@/types/api";
+import { useGymRequests } from "@/hooks/useGymRequests";
+import { Gym, GymRequest } from "@/generated/prisma";
+import { approveGymRequest } from "@/actions/gymApproveAction";
+import { useSession } from "next-auth/react";
+import { toast } from "sonner";
+import { rejectGymRequest } from "@/actions/gymRejectAction";
+import {
+  HoverCard,
+  HoverCardContent,
+  HoverCardTrigger,
+} from "@/components/ui/hover-card";
 
 const statusColors = {
   APPROVED: "bg-green-100 text-green-700 border-green-400",
@@ -22,55 +24,8 @@ const statusColors = {
   REJECTED: "bg-red-100 text-red-700 border-red-400",
 };
 
-// Type for API call
-type GymRequestsFetchParams = {
-  page: number;
-  pageSize: number;
-  sort?: SortParam[];
-};
-
-async function fetchGymRequests(
-  params: GymRequestsFetchParams
-): Promise<ApiResponse<Page<GymRequest>>> {
-  const safeSort = (params.sort || [])
-    .filter(
-      (s) =>
-        typeof s.field === "string" && (s.order === "asc" || s.order === "desc")
-    )
-    .map((s) => ({ field: s.field.trim(), order: s.order }));
-
-  const resp = await fetch(`/api/admin/gym-requests`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      page: params.page,
-      pageSize: params.pageSize,
-      sort: safeSort.length
-        ? safeSort
-        : [{ field: "createdAt", order: "desc" }],
-    }),
-  });
-
-  const result = await resp.json();
-
-  if (result?.data?.data) {
-    result.data.data = result.data.data.map((req: any) => ({
-      ...req,
-      createdAt: new Date(req.createdAt),
-    }));
-  }
-
-  return result;
-}
-
 const GymSubmissionsList = () => {
-  const [rejectDialogOpen, setRejectDialogOpen] = useState(false);
-  const [rejectData, setRejectData] = useState({ gymId: 0, reason: "" });
-
-  const [requests, setRequests] = useState<GymRequest[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
-
-  // sorting
   const [sortParams, setSortParams] = useState<SortParam[]>([
     { field: "createdAt", order: "desc" },
   ]);
@@ -94,19 +49,26 @@ const GymSubmissionsList = () => {
     });
   };
 
-  const { data, error, isPending } = useQuery({
-    queryKey: ["adminGymRequests", currentPage, sortParams],
-    queryFn: () =>
-      fetchGymRequests({
-        page: currentPage,
-        pageSize: 10,
-        sort: sortParams,
-      }),
-  });
+  const handleApprove = async (
+    gym: GymRequest,
+    adminId: string
+  ): Promise<ApiResponse<Gym | null>> => {
+    console.log("Approved gym:", gym.gymName);
+    return await approveGymRequest(gym, adminId);
+  };
+  const handleReject = async (
+    gym: GymRequest,
+    adminId: string,
+    reason: string
+  ): Promise<ApiResponse<GymRequest | null>> => {
+    console.log(
+      `Rejected gym: ${gym.gymName}, Reason: ${reason},AdminId: ${adminId}`
+    );
 
-  useEffect(() => {
-    if (data?.data?.data) setRequests(data.data.data);
-  }, [data]);
+    return await rejectGymRequest(gym, adminId, reason);
+  };
+  const { data, error, isPending } = useGymRequests(currentPage, sortParams);
+  const requests = data?.data?.data ?? [];
 
   if (isPending) return <Loading />;
 
@@ -119,7 +81,7 @@ const GymSubmissionsList = () => {
       />
     );
 
-  if (!requests || requests.length === 0)
+  if (requests.length === 0)
     return (
       <EmptyPage
         heading="No Submissions Found"
@@ -130,12 +92,10 @@ const GymSubmissionsList = () => {
 
   return (
     <div className="min-h-screen bg-[var(--color-primary)] text-black p-6 transition-colors">
-      {/* Header */}
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
         <h1 className="text-2xl font-bold">Gym Requests (Admin)</h1>
       </div>
 
-      {/* Table */}
       <div className="overflow-x-auto rounded-lg shadow">
         <table className="w-full bg-white border border-gray rounded-lg">
           <thead className="bg-secondary text-white text-xs md:text-sm uppercase tracking-wider sticky top-0">
@@ -202,13 +162,82 @@ const GymSubmissionsList = () => {
                   })}
                 </td>
                 <td className="p-3">
-                  <span
-                    className={`px-3 py-1 rounded-full text-xs font-semibold border ${
-                      statusColors[gym.status]
-                    }`}
-                  >
-                    {gym.status}
-                  </span>
+                  <HoverCard>
+                    <HoverCardTrigger asChild>
+                      <span
+                        className={`px-3 py-1 rounded-full text-xs font-semibold border ${
+                          statusColors[gym.status]
+                        }`}
+                      >
+                        {gym.status}
+                      </span>
+                    </HoverCardTrigger>
+                    <HoverCardContent className="w-80 bg-accent/80 backdrop-blur-md border border-accent-foreground/10 shadow-md p-4 rounded-2xl">
+                      {gym.status === "APPROVED" ? (
+                        <div className="space-y-2">
+                          <h4 className="text-sm font-semibold text-emerald-600 flex items-center gap-1">
+                            ✅ Approved
+                          </h4>
+                          <div className="text-sm">
+                            <span className="font-medium text-muted-foreground">
+                              Date:
+                            </span>{" "}
+                            {gym?.approvedAt
+                              ? new Date(gym.approvedAt).toLocaleDateString(
+                                  "en-GB",
+                                  {
+                                    day: "2-digit",
+                                    month: "short",
+                                    year: "numeric",
+                                  }
+                                )
+                              : "—"}
+                          </div>
+                          <div className="text-xs text-muted-foreground">
+                            Approved by{" "}
+                            <span className="font-medium text-foreground">
+                              {gym?.approvedByAdminId || "Unknown"}
+                            </span>
+                          </div>
+                        </div>
+                      ) : (
+                        <div className="space-y-2">
+                          <h4 className="text-sm font-semibold text-red-600 flex items-center gap-1">
+                            ❌ Rejected
+                          </h4>
+                          <div className="text-sm">
+                            <span className="font-medium text-muted-foreground">
+                              Date:
+                            </span>{" "}
+                            {gym?.rejectedAt
+                              ? new Date(gym.rejectedAt).toLocaleDateString(
+                                  "en-GB",
+                                  {
+                                    day: "2-digit",
+                                    month: "short",
+                                    year: "numeric",
+                                  }
+                                )
+                              : "—"}
+                          </div>
+                          {gym?.reason && (
+                            <div className="text-sm text-muted-foreground border-l-2 border-red-400 pl-2">
+                              <span className="font-medium text-foreground">
+                                Reason:
+                              </span>{" "}
+                              {gym.reason}
+                            </div>
+                          )}
+                          <div className="text-xs text-muted-foreground">
+                            Rejected by{" "}
+                            <span className="font-medium text-foreground">
+                              {gym?.rejectedByAdminId || "Unknown"}
+                            </span>
+                          </div>
+                        </div>
+                      )}
+                    </HoverCardContent>
+                  </HoverCard>
                 </td>
                 <td className="p-3 font-medium">{gym.phoneNumber}</td>
                 <td className="p-3 font-medium">
@@ -217,11 +246,9 @@ const GymSubmissionsList = () => {
                 <td className="p-3">
                   <GymSubmissionActionDialog
                     gym={gym}
-                    rejectData={rejectData}
-                    rejectDialogOpen={rejectDialogOpen}
-                    setRejectData={setRejectData}
-                    setRejectDialogOpen={setRejectDialogOpen}
                     key={gym.id}
+                    onApprove={handleApprove}
+                    onReject={handleReject}
                   />
                 </td>
               </tr>
@@ -243,10 +270,3 @@ const GymSubmissionsList = () => {
 };
 
 export default GymSubmissionsList;
-//TODO: Build a gym schema for public listing
-//TODO: Build action for approving a gym Request and adding to Gym db
-//TODO: Build listing page
-//TODO: Build review schema
-//TODO: Build review interface 
-//TODO: Build blacklist
-//TODO: Build Blacklist actions
