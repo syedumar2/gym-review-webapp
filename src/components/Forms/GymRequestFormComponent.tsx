@@ -60,7 +60,6 @@ export default function GymRequestFormComponent() {
       miscEquipment: [],
     },
   });
-  console.log(errors)
 
   const onSubmit = async (data: GymFormInput) => {
     console.log(data);
@@ -125,8 +124,21 @@ export default function GymRequestFormComponent() {
           errors={errors}
           loading={loading}
         />
+             <GymAddressSection
+          control={control}
+          errors={errors}
+          loading={loading}
+        />
+        <GymTimingsSections control={control} loading={loading} />
+
 
         <GymAmenitiesSection
+          control={control}
+          errors={errors}
+          loading={loading}
+        />
+
+               <GymMembershipPlanSection
           control={control}
           errors={errors}
           loading={loading}
@@ -138,18 +150,9 @@ export default function GymRequestFormComponent() {
           loading={loading}
         />
 
-        <GymAddressSection
-          control={control}
-          errors={errors}
-          loading={loading}
-        />
+   
 
-        <GymTimingsSections control={control} loading={loading} />
-        <GymMembershipPlanSection
-          control={control}
-          errors={errors}
-          loading={loading}
-        />
+
 
         <GymImageUploadSection
           images={images}
@@ -157,7 +160,6 @@ export default function GymRequestFormComponent() {
           loading={loading}
         />
 
-        <DevTool control={control} />
 
         <div className="flex w-full justify-end mt-4">
           {" "}

@@ -21,6 +21,9 @@ export async function submitGymRequest(
                 city: data.city,
                 state: data.state
             },
+            city: data.city,
+            state: data.state,
+            pincode: data.pincode ,
             gymType: data.type,
             genderSegregation: data.genderSegregation,
             phoneNumber: data.phone,

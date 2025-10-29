@@ -79,6 +79,7 @@ const GymMembershipPlanSection = ({
                       <SelectItem value={PlanType.DAILY}>Daily</SelectItem>
                       <SelectItem value={PlanType.WEEKLY}>Weekly</SelectItem>
                       <SelectItem value={PlanType.MONTHLY}>Monthly</SelectItem>
+                        <SelectItem value={PlanType.YEARLY}>Yearly</SelectItem>
                     </SelectContent>
                   </Select>
                 )}
@@ -99,7 +100,7 @@ const GymMembershipPlanSection = ({
                   <Input
                     type="number"
                     {...field}
-                    value={field.value ?? 0}
+                    value={field.value}
                     onChange={(e) => field.onChange(Number(e.target.value))}
                     className="mt-1"
                     disabled={loading}

@@ -3,7 +3,14 @@
 import { GymRequest } from "@/generated/prisma";
 import { ApiResponse, Page, SortParam } from "@/types/api";
 import { useQuery } from "@tanstack/react-query";
-import { AlertCircle, ArrowDown, ArrowUp, ArrowUpDown, Dumbbell, PlusCircle } from "lucide-react";
+import {
+  AlertCircle,
+  ArrowDown,
+  ArrowUp,
+  ArrowUpDown,
+  Dumbbell,
+  PlusCircle,
+} from "lucide-react";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
@@ -11,9 +18,11 @@ import { EmptyPage } from "../Error/EmptyPage";
 import { Loading } from "../Overlays/Loading";
 import Pagination from "../Pagination/Pagination";
 import { Button } from "../ui/button";
-import { HoverCard, HoverCardContent, HoverCardTrigger } from "../ui/hover-card";
-
-
+import {
+  HoverCard,
+  HoverCardContent,
+  HoverCardTrigger,
+} from "../ui/hover-card";
 
 type GymRequestsFetchParams = {
   userId: string;
@@ -75,8 +84,7 @@ const GymRequests = () => {
         order: s.order,
       }));
 
-    const resp = await fetch(`/api/user/gym-requests`,
-       {
+    const resp = await fetch(`/api/user/gym-requests`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -100,7 +108,7 @@ const GymRequests = () => {
   }
 
   const { data, error, isPending } = useQuery({
-    queryKey: ["gymRequests", currentPage,sortParams],
+    queryKey: ["gymRequests", currentPage, sortParams],
     queryFn: () =>
       fetchGymRequests({
         page: currentPage,
@@ -172,7 +180,7 @@ const GymRequests = () => {
                 return (
                   <th
                     key={field}
-                    className="text-left p-3 border-b border-gray-300"
+                    className="text-left p-3 !border-b !border-gray-300"
                   >
                     <button
                       onClick={() => toggleSort(field)}
@@ -201,12 +209,12 @@ const GymRequests = () => {
           </thead>
           <tbody>
             {requests.map((req) => (
-              <tr key={req.id} className="hover:bg-accent">
+              <tr key={req.id} className="hover:bg-accent ">
                 <td className="p-3 border-b">{req.gymName}</td>
                 <td className="p-3 border-b">
                   {req.createdAt.toLocaleDateString()}
                 </td>
-            <td className="p-3">
+                <td className="p-3 border-b">
                   <HoverCard>
                     <HoverCardTrigger asChild>
                       <span
@@ -245,7 +253,7 @@ const GymRequests = () => {
                             </span>
                           </div>
                         </div>
-                      ) : (
+                      ) : req.status === "REJECTED" ? (
                         <div className="space-y-2">
                           <h4 className="text-sm font-semibold text-red-600 flex items-center gap-1">
                             ❌ Rejected
@@ -278,6 +286,28 @@ const GymRequests = () => {
                             <span className="font-medium text-foreground">
                               {req?.rejectedByAdminId || "Unknown"}
                             </span>
+                          </div>
+                        </div>
+                      ) : (
+                        <div>
+                          {" "}
+                          <h4 className="text-sm font-semibold text-yellow flex items-center gap-1">
+                            Pending
+                          </h4>
+                            <div className="text-sm">
+                            <span className="font-medium text-muted-foreground">
+                              Created At:
+                            </span>{" "}
+                            {req?.createdAt
+                              ? new Date(req.createdAt).toLocaleDateString(
+                                  "en-GB",
+                                  {
+                                    day: "2-digit",
+                                    month: "short",
+                                    year: "numeric",
+                                  }
+                                )
+                              : "—"}
                           </div>
                         </div>
                       )}

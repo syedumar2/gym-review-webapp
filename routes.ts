@@ -6,7 +6,7 @@
 export const publicRoutes = [
     "/",
     "/listings",
-
+    "/gyms"
 ]
 /**
  * Array of routes that require authentication
@@ -27,7 +27,7 @@ export const authRoutes = [
  * @type {string}
  */
 export const apiAuthPrefix = "/api/auth";
-
+export const apiPublicPrefix = "/api/public";
 
 
 /**

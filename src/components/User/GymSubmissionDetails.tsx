@@ -17,8 +17,9 @@ export type ParsedGymRequest = GymRequest & {
   };
   images: { url: string }[];
   membershipPlans: {
-    type: string;
-    pricePerMonth: number;
+    planName: string;
+    planType: string;
+    price: number;
     perks: string[];
   }[];
 };
@@ -45,7 +46,7 @@ const GymSubmissionDetails = ({ gym }: { gym: ParsedGymRequest }) => {
 
       {/* Status Badge */}
       <div className="mb-6">
-        <span className="px-4 py-1.5 rounded-full text-sm font-medium bg-yellow text-black">
+        <span className="px-4 py-1.5 rounded-full text-sm font-medium bg-yellow text-accent">
           {gym?.status}
         </span>
       </div>

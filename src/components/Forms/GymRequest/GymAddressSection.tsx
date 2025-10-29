@@ -64,6 +64,22 @@ const GymAddressSection = ({ errors, control, loading }: Props) => {
         </div>
       </div>
 
+      <div className="w-full">
+        <Label htmlFor="state" className="mb-2">
+          Pincode
+        </Label>
+        <Controller
+          name="pincode"
+          control={control}
+          render={({ field }) => (
+            <Input id="pincode" disabled={loading} {...field} />
+          )}
+        />
+        {errors.pincode && (
+          <p className="text-red-500 text-sm">{errors.pincode.message}</p>
+        )}
+      </div>
+
       {/* Phone */}
       <div>
         <Label htmlFor="phone" className="mb-2">

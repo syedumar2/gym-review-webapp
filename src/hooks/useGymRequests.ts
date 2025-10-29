@@ -40,15 +40,6 @@ async function fetchGymRequests(
   });
 
   const result = await resp.json();
-
-  // Parse date field into Date objects
-  if (result?.data?.data) {
-    result.data.data = result.data.data.map((req: any) => ({
-      ...req,
-      createdAt: new Date(req.createdAt),
-    }));
-  }
-
   return result;
 }
 

@@ -34,6 +34,7 @@ export const GymFormSchema = z.object({
         .max(100)
         .optional()
     ,
+    pincode: z.string().regex(/^\d{6}$/, "Invalid pincode format. Must be 6 digits.").optional(),
     state: z
         .string()
         .trim()

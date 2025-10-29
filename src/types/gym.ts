@@ -95,7 +95,7 @@ export const MISC_EQUIPMENT_LABELS = {
   PULLUP_BAR: "Pull-Up Bar",
 };
 
-export interface Gym {
+export interface GymDupli {
   id: string; // unique identifier
   name: string;
   slug: string;
@@ -117,7 +117,7 @@ export interface EquipmentCategory {
 }
 
 
-export const dummyGyms: Gym[] = [
+export const dummyGyms: GymDupli[] = [
   {
     id: "g1",
     name: "Iron Paradise Fitness",

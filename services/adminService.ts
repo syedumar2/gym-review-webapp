@@ -47,13 +47,13 @@ export const getAllUsers = async (
 
   const totalPages = Math.ceil(totalUsers / safePageSize);
 
-  return {
-    data: users,
-    page: safePage,
-    pageSize: safePageSize,
-    totalPages,
-    totalElements: totalUsers,
-  };
+    return {
+      data: users,
+      page: safePage,
+      pageSize: safePageSize,
+      totalPages,
+      totalElements: totalUsers,
+    };
 };
 
 
@@ -233,6 +233,9 @@ export const approveGym = async (
         gymName: gymData.gymName,
         description: gymData.description,
         address: gymData.address as InputJsonValue,
+        city: gymData.city,
+        state: gymData.state,
+        pincode: gymData.pincode,
         gymType: gymData.gymType,
         genderSegregation: gymData.genderSegregation,
         phoneNumber: gymData.phoneNumber,

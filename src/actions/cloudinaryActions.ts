@@ -8,7 +8,7 @@ cloudinary.config({
 });
 
 
-//TODO Find the reason for the stupid invalid signature error
+//TODO(LOW): Find the reason for the stupid invalid signature error
 
 export async function deleteImage(public_id: string): Promise<ApiResponse<any>> {
     if (!public_id) {

@@ -1,22 +1,20 @@
 "use client";
-import Pagination from "@/components/Pagination/Pagination";
-import { AlertCircle, ArrowDown, ArrowUp, ArrowUpDown } from "lucide-react";
-import { useState } from "react";
-import { EmptyPage, Loading } from "@/components";
-import GymSubmissionActionDialog from "../Dialog/GymSubmissionActionDialog";
-import Link from "next/link";
-import { ApiResponse, SortParam } from "@/types/api";
-import { useGymRequests } from "@/hooks/useGymRequests";
-import { Gym, GymRequest } from "@/generated/prisma";
 import { approveGymRequest } from "@/actions/gymApproveAction";
-import { useSession } from "next-auth/react";
-import { toast } from "sonner";
 import { rejectGymRequest } from "@/actions/gymRejectAction";
+import { EmptyPage, Loading } from "@/components";
+import Pagination from "@/components/Pagination/Pagination";
 import {
   HoverCard,
   HoverCardContent,
   HoverCardTrigger,
 } from "@/components/ui/hover-card";
+import { Gym, GymRequest } from "@/generated/prisma";
+import { useGymRequests } from "@/hooks/useGymRequests";
+import { ApiResponse, SortParam } from "@/types/api";
+import { AlertCircle, ArrowDown, ArrowUp, ArrowUpDown } from "lucide-react";
+import Link from "next/link";
+import { useState } from "react";
+import GymSubmissionActionDialog from "../Dialog/GymSubmissionActionDialog";
 
 const statusColors = {
   APPROVED: "bg-green-100 text-green-700 border-green-400",
@@ -97,7 +95,7 @@ const GymSubmissionsList = () => {
       </div>
 
       <div className="overflow-x-auto rounded-lg shadow">
-        <table className="w-full bg-white border border-gray rounded-lg">
+        <table className="w-full bg-white !border !border-gray rounded-lg">
           <thead className="bg-secondary text-white text-xs md:text-sm uppercase tracking-wider sticky top-0">
             <tr>
               {["gymName", "requestingUser", "createdAt", "status"].map(
@@ -143,7 +141,7 @@ const GymSubmissionsList = () => {
             {requests.map((gym) => (
               <tr
                 key={gym.id}
-                className="border-b border-gray bg-accent hover:bg-primary hover:text-black transition"
+                className="!border-b !border-gray bg-accent hover:bg-primary hover:text-black transition"
               >
                 <td className="p-3 font-medium">
                   <Link
@@ -155,13 +153,13 @@ const GymSubmissionsList = () => {
                 </td>
                 <td className="p-3 font-medium">{gym?.user?.name}</td>
                 <td className="p-3 text-sm">
-                  {gym.createdAt.toLocaleDateString("en-GB", {
+                  {new Date(gym.createdAt).toLocaleDateString("en-GB", {
                     day: "2-digit",
                     month: "short",
                     year: "numeric",
                   })}
                 </td>
-                <td className="p-3">
+                <td className="p-3 font-medium !border-b">
                   <HoverCard>
                     <HoverCardTrigger asChild>
                       <span
@@ -200,7 +198,7 @@ const GymSubmissionsList = () => {
                             </span>
                           </div>
                         </div>
-                      ) : (
+                      ) : gym.status === "REJECTED" ? (
                         <div className="space-y-2">
                           <h4 className="text-sm font-semibold text-red-600 flex items-center gap-1">
                             ❌ Rejected
@@ -233,6 +231,28 @@ const GymSubmissionsList = () => {
                             <span className="font-medium text-foreground">
                               {gym?.rejectedByAdminId || "Unknown"}
                             </span>
+                          </div>
+                        </div>
+                      ) : (
+                        <div>
+                          {" "}
+                          <h4 className="text-sm font-semibold text-yellow flex items-center gap-1">
+                            Pending
+                          </h4>
+                          <div className="text-sm">
+                            <span className="font-medium text-muted-foreground">
+                              Created At:
+                            </span>{" "}
+                            {gym?.createdAt
+                              ? new Date(gym.createdAt).toLocaleDateString(
+                                  "en-GB",
+                                  {
+                                    day: "2-digit",
+                                    month: "short",
+                                    year: "numeric",
+                                  }
+                                )
+                              : "—"}
                           </div>
                         </div>
                       )}

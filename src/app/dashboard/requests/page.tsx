@@ -13,4 +13,4 @@ const page = () => {
 }
 
 export default page
-//TODO: In the future try adding a search bar
+//TODO (LOW):  try adding a search bar

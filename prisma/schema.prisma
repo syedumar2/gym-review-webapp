@@ -185,6 +185,9 @@ model GymRequest {
   gymName             String
   description         String
   address             Json
+  city                String?
+  state               String?
+  pincode             String?               @db.VarChar(10)
   gymType             GymType
   genderSegregation   GenderSegregation
   phoneNumber         String                @db.VarChar(15)
@@ -202,7 +205,7 @@ model GymRequest {
   rejectedByAdminId   String?
   approvedByAdminId   String?
 
-  status    Status   @default(PENDING)
+  status    Status    @default(PENDING)
   updatedAt DateTime?
 
   reason          String?
@@ -218,6 +221,9 @@ model Gym {
   gymName             String
   description         String
   address             Json
+  city                String?
+  state               String?
+  pincode             String?               @db.VarChar(10)
   gymType             GymType
   genderSegregation   GenderSegregation
   phoneNumber         String                @db.VarChar(15)
@@ -229,6 +235,8 @@ model Gym {
   functionalEquipment FunctionalEquipment[]
   miscEquipment       MiscEquipment[]
   images              Json
+  reviewCount         Int                   @default(0)
+  rating              Decimal               @default(0.0) @db.Decimal(2, 1)
   createdAt           DateTime              @default(now())
   updatedAt           DateTime              @default(now()) @updatedAt
 

@@ -1,273 +1,251 @@
-import { dummyGyms } from "@/types/gym";
-import { Clock, Dumbbell, MapPin, Phone, ThumbsDown, ThumbsUp } from "lucide-react";
+import { Gym } from "@/generated/prisma";
+import { Review } from "@/types/review";
+import {
+  Clock,
+  Dumbbell,
+  Icon,
+  MapPin,
+  PersonStanding,
+  Phone,
+  Settings,
+  Settings2,
+  ThumbsDown,
+  ThumbsUp,
+} from "lucide-react";
 import PaginationStatic from "../Pagination/PaginationStatic";
 import StarRating from "../RatingStars/RatingStars";
-import { Review } from "@/types/review";
-const dummyReviews: Review[] = [
-  {
-    id: "1",
-    gymId: "101",
-    gymName: "FitPro Gym",
-    userName: "Amit",
-    userAvatar: "https://randomuser.me/api/portraits/men/11.jpg",
-    rating: 4,
-    body: "Spacious and clean. Trainers are helpful.",
-    createdAt: "2025-09-20T10:30:00Z",
-    images: [
-      "https://via.placeholder.com/150",
-      "https://via.placeholder.com/150",
-    ],
-    approved: true,
-    likes: 12,
-    dislikes: 1,
-  },
-  {
-    id: "2",
-    gymId: "101",
-    gymName: "FitPro Gym",
-    userName: "Sara",
-    userAvatar: "https://randomuser.me/api/portraits/women/21.jpg",
-    rating: 5,
-    body: "Great vibe! Love the equipment quality.",
-    createdAt: "2025-09-25T15:45:00Z",
-    images: ["https://via.placeholder.com/150"],
-    approved: false,
-    likes: 20,
-    dislikes: 0,
-  },
-  {
-    id: "3",
-    gymId: "102",
-    gymName: "PowerHouse Fitness",
-    userName: "Rohan",
-    userAvatar: "https://randomuser.me/api/portraits/men/31.jpg",
-    rating: 3,
-    body: "Good equipment but can be crowded during evenings.",
-    createdAt: "2025-09-22T12:00:00Z",
-    approved: true,
-    likes: 5,
-    dislikes: 2,
-  },
-  {
-    id: "4",
-    gymId: "103",
-    gymName: "Urban Gym",
-    userName: "Neha",
-    userAvatar: "https://randomuser.me/api/portraits/women/41.jpg",
-    rating: 4,
-    body: "Friendly staff and clean environment.",
-    createdAt: "2025-09-24T09:15:00Z",
-    images: [],
-    approved: true,
-    likes: 8,
-    dislikes: 0,
-  },
-];
+import {
+  AMENITY_LABELS,
+  CARDIO_EQUIPMENT_LABELS,
+  FUNCTIONAL_EQUIPMENT_LABELS,
+  GENDER_SEGREGATION_LABELS,
+  GYM_TYPE_LABELS,
+  MISC_EQUIPMENT_LABELS,
+  STRENGTH_EQUIPMENT_LABELS,
+} from "@/types/gym";
 
-export default function GymDetails() {
-  const gym = dummyGyms.slice(0, 1)[0];
+const formatTime = (time: string) => {
+  try {
+    const [hour, minute] = time.split(":");
+    const date = new Date();
+    date.setHours(parseInt(hour), parseInt(minute));
+    return date.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+  } catch {
+    return time;
+  }
+};
 
+export type ParsedGym = Gym & {
+  address: {
+    address?: string;
+    city?: string;
+    state?: string;
+    pincode?: string;
+  };
+  timings: {
+    morningEnd?: string;
+    eveningEnd?: string;
+    morningStart?: string;
+    eveningStart?: string;
+  };
+  images: { url: string }[];
+  membershipPlans: {
+    planName: string;
+    planType: string;
+    price: number;
+    perks: string[];
+  }[];
+};
+
+export default function GymDetails({ gym }: { gym: ParsedGym }) {
   return (
-    <div className="max-w-5xl mx-auto px-4 py-8 space-y-12">
-      {/* Header */}
-      <section className="space-y-4">
+    <div className="max-w-6xl mx-auto px-4 py-10 space-y-12">
+      {/* HEADER */}
+      <section className="space-y-6">
         <img
-          src={gym.images[0]}
-          alt={gym.name}
-          className="w-full h-80 object-cover rounded-lg"
+          src={gym?.images?.[0]?.url || "https://via.placeholder.com/600x300"}
+          alt={gym?.gymName}
+          className="w-full h-80 object-cover rounded-2xl shadow-md"
         />
-        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-          <div className="space-y-2 ">
-            <h1 className="text-3xl font-bold">{gym.name}</h1>
-            <p className="flex gap-1 items-center text-gray mt-4">
-              <MapPin className="text-black" size={20} /> {gym.address.line1},{" "}
-              {gym.address.city}
+
+        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
+          <div className="space-y-3">
+            <h1 className="text-4xl font-extrabold ">
+              {gym.gymName}
+            </h1>
+            <p className="flex gap-2 items-center text-gray-600">
+              <MapPin className="text-secondary" size={20} />
+              {gym.address?.address || "Address not provided"},{" "}
+              {gym.address?.city}, {gym.address?.state} - {gym.address?.pincode}
             </p>
-            <p className="flex gap-1 items-center text-gray">
-              <Dumbbell className="text-black" size={20} />
-              {gym.type} • {gym.genderSegregated}
+            <p className="flex gap-2 items-center text-gray-600">
+              <Dumbbell className="text-secondary" size={20} />
+              {GYM_TYPE_LABELS[gym.gymType]} •{" "}
+              {GENDER_SEGREGATION_LABELS[gym.genderSegregation]}
             </p>
-            <p className="flex gap-1 items-center text-gray">
-              <Phone className="text-black" size={20} /> {gym.phone}
+            <p className="flex gap-2 items-center text-gray-600">
+              <Phone className="text-secondary" size={20} /> {gym.phoneNumber}
             </p>
-            <p className="flex gap-2 items-center text-gray">
-              <Clock className="text-black" size={20} /> {gym.hours}
+            <p className="flex gap-2 items-center text-gray-600">
+              <Clock className="text-secondary" size={20} />
+              {gym.timings.morningStart &&
+                gym.timings.morningEnd &&
+                (gym.timings.eveningStart && gym.timings.eveningEnd ? (
+                  <span>
+                    {formatTime(gym.timings.morningStart)} –{" "}
+                    {formatTime(gym.timings.morningEnd)} &{" "}
+                    {formatTime(gym.timings.eveningStart)} –{" "}
+                    {formatTime(gym.timings.eveningEnd)}
+                  </span>
+                ) : (
+                  <span>
+                    {formatTime(gym.timings.morningStart)} –{" "}
+                    {formatTime(gym.timings.morningEnd)}
+                  </span>
+                ))}
             </p>
           </div>
-          <div className="flex items-center gap-2 mb-12">
-            <StarRating rating={gym.avgRating} />
-            <span className="text-sm text-gray-500">
-              ({gym.reviewCount} reviews)
-            </span>
+
+          <div className="flex items-center gap-2">
+            <StarRating rating={Number(gym.rating || 0)} />
+            <span className="text-sm text-gray-500">(No reviews yet)</span>
           </div>
         </div>
-        <button className="bg-secondary text-white px-6 py-2 rounded-lg hover:bg-secondary/90 transition">
+
+        <button className=" bg-secondary text-white px-6 py-2 rounded-lg hover:opacity-90 transition font-medium shadow-md">
           Post a Review
         </button>
       </section>
 
-      {/* Amenities */}
-      <section>
-        <h2 className="text-2xl font-semibold mb-4">Amenities</h2>
-        <ul className="grid grid-cols-2 sm:grid-cols-3 gap-3">
-          {gym.amenities.map((amenity, idx) => (
-            <li
-              key={idx}
-              className="bg-secondary text-white text-center px-2 py-2 rounded-full  text-md"
-            >
-              {amenity}
-            </li>
-          ))}
-        </ul>
-      </section>
+      {/* AMENITIES */}
+      {gym.amenities?.length > 0 && (
+        <section className="bg-accent/50 rounded-xl p-6 shadow-md">
+          <h2 className="text-2xl font-semibold border-b-2 border-secondary/60 pb-2 mb-4">
+            Amenities
+          </h2>
+          <ul className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
+            {gym.amenities.map((amenity, i) => (
+              <li
+                key={i}
+                className="bg-secondary text-white text-center px-3 py-2 rounded-full text-sm font-medium"
+              >
+                {AMENITY_LABELS[amenity]}
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
 
-      {/* Membership Plans */}
-      <section>
-        <h2 className="text-2xl font-semibold mb-4">Membership Plans</h2>
-        <div className="grid sm:grid-cols-2 gap-6">
-          {gym.membershipPlans.map((plan, idx) => (
-            <div
-              key={idx}
-              className="border border-accent rounded-lg p-4 bg-accent dark:bg-accent   shadow-sm"
-            >
-              <h3 className="font-bold text-lg">{plan.type}</h3>
-              <p className="text-secondary font-semibold">
-                ₹{plan.pricePerMonth} / month
-              </p>
-              <ul className="mt-2 list-disc list-inside text-black text-sm space-y-1">
-                {plan.perks.map((perk, i) => (
-                  <li key={i}>{perk}</li>
-                ))}
-              </ul>
-            </div>
-          ))}
-        </div>
-      </section>
+      {/* MEMBERSHIP PLANS */}
+      {gym.membershipPlans?.length > 0 && (
+        <section className="space-y-4">
+          <h2 className="text-2xl font-semibold border-b-2 border-secondary/60 pb-2">
+            Membership Plans
+          </h2>
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            {gym.membershipPlans.map((plan, i) => (
+              <div
+                key={i}
+                className="bg-accent/60 rounded-xl p-5 shadow-md hover:shadow-lg hover:-translate-y-1 transition"
+              >
+                <h3 className="font-bold text-lg ">
+                  {plan.planType}
+                </h3>
+                <p className="text-secondary font-semibold mt-1">
+                  ₹{plan.price} / month
+                </p>
+                <ul className="mt-3 list-disc list-inside text-gray-700 text-sm space-y-1">
+                  {plan.perks.map((perk, j) => (
+                    <li key={j}>{perk}</li>
+                  ))}
+                </ul>
+              </div>
+            ))}
+          </div>
+        </section>
+      )}
 
-      {/* Machines & Equipment */}
-      <section>
-        <h2 className="text-2xl font-semibold mb-4">Machines & Equipment</h2>
-        <div className="grid grid-cols-2 gap-8  items-stretch space-y-6 shadow-sm">
-          {gym.equipment.map((eq, idx) => (
-            <div
-              key={idx}
-              className="border border-accent  p-4 rounded-lg bg-primary/50 h-full"
-            >
-              <h3 className="font-semibold text-lg mb-2">{eq.category}</h3>
-              <ul className="list-disc list-inside text-gray-700 space-y-1 text-sm">
-                {eq.items.map((item, i) => (
-                  <li key={i}>{item}</li>
-                ))}
-              </ul>
-            </div>
-          ))}
-        </div>
-      </section>
+      {/* GALLERY */}
+      {gym.images?.length > 1 && (
+        <section>
+          <h2 className="text-2xl font-semibold border-b-2 border-secondary/60 pb-2 mb-4">
+            Gallery
+          </h2>
+          <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
+            {gym.images.map((img, i) => (
+              <img
+                key={i}
+                src={img.url}
+                alt={`${gym.gymName} ${i + 1}`}
+                className="w-full h-52 object-cover rounded-lg shadow-md hover:scale-105 transition-transform"
+              />
+            ))}
+          </div>
+        </section>
+      )}
 
-      {/* Gallery */}
-      <section>
-        <h2 className="text-2xl font-semibold mb-4">Gallery</h2>
-        <div className="grid grid-cols-2 gap-4">
-          {gym.images.map((img, idx) => (
-            <img
-              key={idx}
-              src={img}
-              alt={`${gym.name} photo ${idx + 1}`}
-              className="w-full h-52 object-cover rounded-lg"
-            />
-          ))}
-        </div>
-      </section>
+      {/* EQUIPMENT */}
+      {(gym.cardioEquipment?.length ||
+        gym.strengthEquipment?.length ||
+        gym.functionalEquipment?.length ||
+        gym.miscEquipment?.length) && (
+        <section className="bg-primary rounded-xl p-6 shadow-md space-y-6">
+          <h2 className="text-2xl font-semibold border-b-2 border-secondary/60 pb-2">
+            Equipment
+          </h2>
 
-      {/* Reviews Section */}
-      <section>
-        <div className="flex items-center justify-between mb-6">
-          <h2 className="text-2xl font-semibold">User Reviews</h2>
+          {[
+            { title: "Cardio Equipment", list: gym.cardioEquipment, labels: CARDIO_EQUIPMENT_LABELS, Icon: PersonStanding },
+            { title: "Strength Equipment", list: gym.strengthEquipment, labels: STRENGTH_EQUIPMENT_LABELS, Icon: Dumbbell },
+            { title: "Functional Equipment", list: gym.functionalEquipment, labels: FUNCTIONAL_EQUIPMENT_LABELS, Icon: Settings },
+            { title: "Miscellaneous Equipment", list: gym.miscEquipment, labels: MISC_EQUIPMENT_LABELS, Icon: Settings2  },
+          ].map(
+            (section, i) =>
+              section.list?.length > 0 && (
+                <div key={i}>
+                  <h3 className="text-xl  font-semibold text-secondary flex items-center gap-2 mb-3">
+                    <section.Icon size={20} /> {section.title}
+                  </h3>
+                  <ul className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                    {section.list.map((eq, j) => (
+                      <li
+                        key={j}
+                        className="bg-accent rounded-lg p-3 text-center text-sm font-medium shadow-sm"
+                      >
+                        {section.labels[eq]}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )
+          )}
+        </section>
+      )}
 
-          {/* Filter + Sort Buttons */}
+      {/* REVIEWS */}
+      <section className="space-y-6">
+        <div className="flex items-center justify-between">
+          <h2 className="text-2xl font-semibold border-b-2 border-secondary/60 pb-2">
+            User Reviews
+          </h2>
           <div className="flex gap-2">
-            <button className="px-3 py-1 bg-secondary text-white rounded hover:bg-secondary/80 transition">
+            <button className="px-4 py-2 bg-secondary text-white rounded-lg hover:bg-secondary/80 transition">
               Filter
             </button>
-            <button className="px-3 py-1 bg-secondary text-white rounded hover:bg-secondary/80 transition">
+            <button className="px-4 py-2 bg-secondary text-white rounded-lg hover:bg-secondary/80 transition">
               Sort
             </button>
           </div>
         </div>
 
-        {dummyReviews.length > 0 ? (
-          <div className="space-y-6 flex flex-col">
-            {dummyReviews.map((review: Review) => (
-              <div
-                key={review.id}
-                className="p-4 border border-black/25 rounded-lg bg-accent shadow-sm"
-              >
-                <div className="flex items-center justify-between mb-2">
-                  <div className="flex items-center gap-2">
-                    <img
-                      src={review.userAvatar}
-                      alt={review.userName}
-                      className="w-10 h-10 rounded-full object-cover"
-                    />
-                    <h3 className="font-semibold text-black">
-                      {review.userName}
-                    </h3>
-                  </div>
-                  <span className="text-sm text-gray-500">
-                    {new Date(review.createdAt).toLocaleDateString()}
-                  </span>
-                </div>
+        {/* Replace with actual reviews */}
+        <p className="text-gray-600 italic">
+          No reviews yet. Be the first to share your experience!
+        </p>  
 
-                <div className="flex items-center mb-2">
-                  <StarRating rating={review.rating} />
-             
-                </div>
-
-                <p className="text-gray">{review.body}</p>
-
-                {/* Optional Images */}
-                {review.images && review.images.length > 0 && (
-                  <div className="mt-2 flex gap-2 overflow-x-auto">
-                    {review.images.map((img, idx) => (
-                      <img
-                        key={idx}
-                        src={img}
-                        alt={`review-${idx}`}
-                        className="w-24 h-24 object-cover rounded"
-                      />
-                    ))}
-                  </div>
-                )}
-
-                {/* Optional Approval Status */}
-                <div className="flex items-center justify-between w-full">
-                  {review.approved !== undefined && (
-                    <span
-                      className={`inline-block mt-2 text-sm font-medium ${
-                        review.approved ? "text-green-600" : "text-red-600"
-                      }`}
-                    >
-                      {review.approved ? "Approved" : "Pending"}
-                    </span>
-                  
-                  )}
-                       <span className="flex items-center gap-1 mt-2 text-sm text-gray-600">
-                      {review.likes || 0} <ThumbsUp size={18} className="mb-1"/> • {review.dislikes || 0} <ThumbsDown className="mt-0.5" size={18}/>
-                    </span>
-                </div>
-                
-              </div>
-            ))}
-
-            <section className="flex w-full items-center justify-center py-4">
-              <PaginationStatic />
-            </section>
-          </div>
-        ) : (
-          <p className="text-gray-600">
-            No reviews yet. Be the first to share your experience!
-          </p>
-        )}
+        <div className="flex justify-center py-6">
+          <PaginationStatic />
+        </div>
       </section>
     </div>
   );

@@ -1,8 +1,8 @@
-import { Gym } from "@/types/gym";
+import { GymDupli } from "@/types/gym";
 import Link from "next/link";
 
 type FeaturedGymsProps = {
-  listings?: Gym[];
+  listings?: GymDupli[];
 };
 
 const FeaturedGyms = ({ listings = [] }: FeaturedGymsProps) => {
@@ -14,7 +14,7 @@ const FeaturedGyms = ({ listings = [] }: FeaturedGymsProps) => {
     <section className="py-8  px-4 bg-accent">
       <h1 className="section-heading">Featured Gyms</h1>
       <div className="grid grid-rows-1 grid-flow-col gap-4 overflow-x-auto no-scrollbar snap-x snap-mandatory ">
-        {listings.map((gym: Gym) => (
+        {listings.map((gym: GymDupli) => (
           <div
             key={gym.id}
             className="w-[400px]  border border-accent rounded-lg shadow bg-primary overflow-hidden "

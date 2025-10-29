@@ -15,4 +15,3 @@ const page = () => {
 };
 
 export default page;
-//TODO: Complete authentication (LEFT HALFWAY)
