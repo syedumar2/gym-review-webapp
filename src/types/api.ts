@@ -5,7 +5,8 @@ export interface ApiResponse<T = any> {
   message?: string;
   error?: string;
 }
-export type SortParam = { field: string; order: "asc" | "desc" };
+export type SortParam = { field: string; order: "asc" | "desc" | null };
+
 export type SearchParam = { searchText: string; searchBy: string; }
 export type Page<T = any> = {
   data: T[];

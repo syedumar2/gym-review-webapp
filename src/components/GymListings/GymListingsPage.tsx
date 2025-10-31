@@ -1,13 +1,12 @@
 import { ApiResponse, Page } from "@/types/api";
 import { publicService } from "../../../services";
-import GymListings from "./GymListings";
-import { Gym } from "@/generated/prisma";
 import { SafeParsedGym } from "../../../services/publicService";
+import GymListings from "./GymListings";
 
 export const revalidate = 0;
 
 export default async function GymListingsPage() {
-  const res = await publicService.getAllGyms(1, 3, undefined, []);
+  const res = await publicService.getAllGyms(1, 20, undefined, []);
 
   if (!res) {
     console.error("Failed to fetch gyms:", res);
