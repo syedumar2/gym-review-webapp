@@ -17,7 +17,7 @@ const SortMenu = ({
   activeSorts,
   onSortChange,
 }: SortMenuProps) => {
-  console.log(activeSorts);
+  console.log("Active sorts",activeSorts);
   const [showSortMenu, setShowSortMenu] = useState(false);
 
   const handleClick = (sort: SortParam) => {
@@ -36,7 +36,7 @@ const SortMenu = ({
           key={f}
           variant="default"
           size={"sm"}
-          className="rounded-full"
+          className="rounded-full bg-accent"
           onClick={() =>
             handleClick({ field: f, order: isToggled?.order ?? null })
           }

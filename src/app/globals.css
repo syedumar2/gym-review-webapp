@@ -72,3 +72,7 @@ html {
 .form-input{
   @apply block w-full rounded-md bg-accent px-3 py-1.5 text-base text-black placeholder:text-black/60 outline-1 outline-white/10 focus:outline-2 focus:outline-secondary border sm:text-sm}
 
+input[list]::-webkit-calendar-picker-indicator {
+  display: none !important;
+  -webkit-appearance: none;
+}

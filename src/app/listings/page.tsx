@@ -5,9 +5,9 @@ import ServerHeader from "@/components/Header";
 const page = () => {
   return (
     <>
-      <ServerHeader />
+ 
       <GymListingsPage/>
-      <Footer />
+    
     </>
   );
 };

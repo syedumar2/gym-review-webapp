@@ -4,7 +4,6 @@ import { publicService } from "../../../../../services";
 
 
 
-
 export async function POST(req: NextRequest) {
     try {
         const body = await req.json();
@@ -12,9 +11,10 @@ export async function POST(req: NextRequest) {
             page = 1,
             pageSize = 10,
             search,
-            sort = []
+            sort = [],
+            filters
         } = body;
-        const result = await publicService.getAllGyms(page, pageSize, search, sort);
+        const result = await publicService.getAllGyms(page, pageSize, search, sort,filters);
         const response: ApiResponse<typeof result> = {
             success: true,
             data: result,

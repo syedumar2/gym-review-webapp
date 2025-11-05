@@ -1,10 +1,20 @@
-import { Gym, Prisma } from "@/generated/prisma/client";
+import { $Enums, Gym, Prisma } from "@/generated/prisma/client";
 import { Page, SearchParam, SortParam } from "@/types/api";
 import prisma from "../lib/prisma";
 
 export type SafeParsedGym = Omit<Gym, "rating"> & {
-  rating: number | null;
+    rating: number | null;
 };
+
+export type GymFilters = {
+    city?: string;
+    state?: string;
+    gymType?: $Enums.GymType;
+    genderSegregation?: $Enums.GenderSegregation;
+    minRating?: number;
+    maxRating?: number;
+    amenities?: $Enums.Amenity[];
+}
 
 export const getGymById = async (id: number): Promise<Gym> => {
     const gym = await prisma.gym.findFirst({ where: { id } });
@@ -17,7 +27,8 @@ export const getAllGyms = async (
     page: number,
     pageSize: number,
     search: SearchParam | undefined,
-    sort: SortParam[]
+    sort: SortParam[],
+    filters: GymFilters
 ): Promise<Page<SafeParsedGym>> => {
     const MAX_PAGE_SIZE = 50;
     const safePage = Math.max(1, page);
@@ -57,14 +68,33 @@ export const getAllGyms = async (
         validColumns.includes(search?.searchBy as keyof Prisma.GymOrderByWithRelationInput) &&
         hasValidSearch;
 
-    const where = isSearchParamValid && search
-        ? {
-            [search.searchBy]: {
-                contains: search.searchText,
-                mode: "insensitive",
-            },
-        }
-        : undefined;
+    const where: Prisma.GymWhereInput = {
+        ...(isSearchParamValid && search
+            ? {
+                [search.searchBy]: {
+                    contains: search.searchText,
+                    mode: "insensitive",
+                },
+            }
+            : {}),
+        ...(filters.city && { city: { equals: filters.city, mode: "insensitive" } }),
+        ...(filters.state && { state: { equals: filters.state, mode: "insensitive" } }),
+        ...(filters.gymType && { gymType: { equals: filters.gymType } }),
+        ...(filters.genderSegregation && { genderSegregation: { equals: filters.genderSegregation } }),
+        ...(filters.amenities && { amenities: { hasSome: filters.amenities } }),
+        ...(filters?.minRating !== undefined || filters?.maxRating !== undefined
+            ? {
+                rating: {
+                    ...(filters.minRating !== undefined && { gte: filters.minRating  }),
+                    ...(filters.maxRating !== undefined && { lte: filters.maxRating }),
+                },
+            }
+            : {}),
+
+
+
+    }
+        ;
 
     const totalGyms = await prisma.gym.count({ where });
 

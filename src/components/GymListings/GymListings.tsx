@@ -1,15 +1,16 @@
 "use client";
+import { useGyms, usePagination, useSort } from "@/hooks";
 import { ApiResponse, Page } from "@/types/api";
 import { GENDER_SEGREGATION_LABELS, GYM_TYPE_LABELS } from "@/types/gym";
 import { AlertCircle } from "lucide-react";
-import { SafeParsedGym } from "../../../services/publicService";
-import FilterMenu from "../Buttons/FilterMenu";
+import { useState } from "react";
+import { GymFilters, SafeParsedGym } from "../../../services/publicService";
+import FilterMenu from "../Buttons/Filter/FilterMenu";
 import SortMenu from "../Buttons/SortMenu";
 import { EmptyPage } from "../Error/EmptyPage";
-import { Loading } from "../Overlays/Loading";
 import Pagination from "../Pagination/Pagination";
 import StarRating from "../RatingStars/RatingStars";
-import { useGyms, usePagination, useSort } from "@/hooks";
+import GymSkeletonList from "./GymSkeletonList";
 
 export const GYM_SORT_LABELS: Record<string, string> = {
   gymName: "Gym Name",
@@ -27,14 +28,40 @@ const GymListings = ({
 }: {
   response: ApiResponse<Page<SafeParsedGym>>;
 }) => {
-  const { page, setPage, nextPage, prevPage, resetPage } = usePagination(1);
+  const { page, setPage } = usePagination(1);
   const { sort, handleSortChange } = useSort([
     { field: "createdAt", order: "desc" },
   ]);
 
-  const { data, isPending, error } = useGyms(page, 20, sort, response);
+  const [filters, setFilters] = useState<GymFilters>({});
+  const handleFilterChange = (filter: GymFilters) => {
+    setFilters(filter);
+  };
 
-  if (isPending) return <Loading />;
+  const { data, isPending, error, isFetching } = useGyms(
+    page,
+    20,
+    sort,
+    filters
+  );
+  const gyms = data?.data?.data ?? [];
+  const totalPages = data?.data?.totalPages ?? 1;
+  if (isPending)
+    return (
+      <section className="wrapper">
+        <div className="flex items-center gap-2 justify-between mb-4">
+          <FilterMenu filters={filters} onFilterChange={handleFilterChange} />
+          <SortMenu
+            fields={Object.keys(GYM_SORT_LABELS)}
+            labels={GYM_SORT_LABELS}
+            activeSorts={sort}
+            onSortChange={handleSortChange}
+          />
+        </div>{" "}
+        <GymSkeletonList />;
+      </section>
+    );
+
   if (error)
     return (
       <EmptyPage
@@ -43,9 +70,6 @@ const GymListings = ({
         Icon={AlertCircle}
       />
     );
-
-  const gyms = data?.data?.data ?? [];
-  const totalPages = data?.data?.totalPages ?? 1;
 
   const renderGyms = (gyms: SafeParsedGym[]) => {
     return gyms.map((gym) => (
@@ -92,18 +116,29 @@ const GymListings = ({
 
   if (gyms.length === 0)
     return (
-      <EmptyPage
-        heading="No Gyms Found"
-        subHeading="Try adjusting your filters or come back later."
-        Icon={AlertCircle}
-      />
+      <section className="wrapper">
+        <div className="flex items-center gap-2 justify-between mb-4">
+          <FilterMenu filters={filters} onFilterChange={handleFilterChange} />
+          <SortMenu
+            fields={Object.keys(GYM_SORT_LABELS)}
+            labels={GYM_SORT_LABELS}
+            activeSorts={sort}
+            onSortChange={handleSortChange}
+          />
+        </div>
+        <EmptyPage
+          heading="No Gyms Found"
+          subHeading="Try adjusting your filters or come back later."
+          Icon={AlertCircle}
+        />
+      </section>  
     );
 
   return (
     <>
       <section className="wrapper">
         <div className="flex items-center gap-2 justify-between mb-4">
-          <FilterMenu />
+          <FilterMenu filters={filters} onFilterChange={handleFilterChange} />
           <SortMenu
             fields={Object.keys(GYM_SORT_LABELS)}
             labels={GYM_SORT_LABELS}
@@ -112,9 +147,13 @@ const GymListings = ({
           />
         </div>
 
-        <div className="grid gap-8 sm:grid-cols-1 md:grid-cols-3 justify-items-center">
-          {renderGyms(gyms)}
-        </div>
+        {isFetching ? (
+          <GymSkeletonList />
+        ) : (
+          <div className="grid gap-8 sm:grid-cols-1 md:grid-cols-3 justify-items-center">
+            {renderGyms(gyms)}
+          </div>
+        )}
       </section>
 
       <section className="flex w-full items-center justify-center py-4">
