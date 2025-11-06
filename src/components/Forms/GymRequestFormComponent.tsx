@@ -62,7 +62,6 @@ export default function GymRequestFormComponent() {
   });
 
   const onSubmit = async (data: GymFormInput) => {
-    console.log(data);
     setLoading(true);
 
     try {

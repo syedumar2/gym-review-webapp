@@ -17,7 +17,6 @@ const SortMenu = ({
   activeSorts,
   onSortChange,
 }: SortMenuProps) => {
-  console.log("Active sorts",activeSorts);
   const [showSortMenu, setShowSortMenu] = useState(false);
 
   const handleClick = (sort: SortParam) => {

@@ -25,9 +25,14 @@ export const GYM_SORT_LABELS: Record<string, string> = {
 
 const GymListings = ({
   response,
+  searchText,
+  searchBy,
 }: {
   response: ApiResponse<Page<SafeParsedGym>>;
+  searchText: string;
+  searchBy: string;
 }) => {
+ 
   const { page, setPage } = usePagination(1);
   const { sort, handleSortChange } = useSort([
     { field: "createdAt", order: "desc" },
@@ -41,6 +46,7 @@ const GymListings = ({
   const { data, isPending, error, isFetching } = useGyms(
     page,
     20,
+    { searchText, searchBy },
     sort,
     filters
   );
@@ -131,7 +137,7 @@ const GymListings = ({
           subHeading="Try adjusting your filters or come back later."
           Icon={AlertCircle}
         />
-      </section>  
+      </section>
     );
 
   return (

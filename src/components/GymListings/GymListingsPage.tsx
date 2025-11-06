@@ -7,8 +7,20 @@ import ServerHeader from "../Header";
 
 export const revalidate = 0;
 
-export default async function GymListingsPage() {
-  const res = await publicService.getAllGyms(1, 20, undefined, [], {});
+export default async function GymListingsPage({
+  searchText,
+  searchBy,
+}: {
+  searchText: string;
+  searchBy: string;
+}) {
+  const res = await publicService.getAllGyms(
+    1,
+    20,
+    { searchText, searchBy },
+    [],
+    {}
+  );
 
   if (!res) {
     console.error("Failed to fetch gyms:", res);
@@ -23,9 +35,12 @@ export default async function GymListingsPage() {
   return (
     <>
       <ServerHeader />
-      <GymListings response={response} />
+      <GymListings
+        response={response}
+        searchText={searchText}
+        searchBy={searchBy}
+      />
       <Footer />
     </>
   );
 }
-//TODO: Find a way to integrate search bar with header. Most likely we have to lift the search param prop from the header, might need to make it a client component completely

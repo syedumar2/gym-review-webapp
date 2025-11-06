@@ -1,13 +1,16 @@
-import { Footer, GymListings, Header } from "@/components";
 import GymListingsPage from "@/components/GymListings/GymListingsPage";
-import ServerHeader from "@/components/Header";
 
-const page = () => {
+const page = async ({
+  searchParams,
+}: {
+  searchParams?: { search?: string; by?: string };
+}) => {
+  const searchText = searchParams?.search || "";
+  const searchBy = searchParams?.by || "gymName";
+
   return (
     <>
- 
-      <GymListingsPage/>
-    
+      <GymListingsPage searchText={searchText} searchBy={searchBy}/>
     </>
   );
 };

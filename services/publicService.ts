@@ -39,6 +39,7 @@ export const getAllGyms = async (
         "city",
         "state",
         "gymType",
+        "description"
     ];
 
     const validSortFields: (keyof Prisma.GymOrderByWithRelationInput)[] = [
@@ -85,7 +86,7 @@ export const getAllGyms = async (
         ...(filters?.minRating !== undefined || filters?.maxRating !== undefined
             ? {
                 rating: {
-                    ...(filters.minRating !== undefined && { gte: filters.minRating  }),
+                    ...(filters.minRating !== undefined && { gte: filters.minRating }),
                     ...(filters.maxRating !== undefined && { lte: filters.maxRating }),
                 },
             }

@@ -1,10 +1,11 @@
 import { useQuery } from "@tanstack/react-query";
-import { ApiResponse, Page, SortParam } from "@/types/api";
+import { ApiResponse, Page, SearchParam, SortParam } from "@/types/api";
 import { GymFilters, SafeParsedGym } from "../../services/publicService";
 
 type GymFetchParams = {
   page: number;
   pageSize: number;
+  search?: SearchParam;
   sort?: SortParam[];
   filters?: GymFilters;
 };
@@ -25,6 +26,7 @@ const fetchGyms = async (
     body: JSON.stringify({
       page: params.page,
       pageSize: params.pageSize,
+      search: params.search,
       sort: safeSort.length
         ? safeSort
         : [{ field: "createdAt", order: "desc" }],
@@ -40,13 +42,14 @@ const fetchGyms = async (
 export const useGyms = (
   page: number,
   pageSize: number,
+  search: SearchParam,
   sort: SortParam[],
   filters: GymFilters,
   initialData?: ApiResponse<Page<SafeParsedGym>>
 ) => {
   return useQuery({
-    queryKey: ["gyms", page, sort, filters],
-    queryFn: () => fetchGyms({ page, pageSize, sort, filters }),
+    queryKey: ["gyms", page, sort, filters, search],
+    queryFn: () => fetchGyms({ page, pageSize, search, sort, filters }),
     placeholderData: initialData,
     staleTime: 60_000, // cache for 1 minute
   });

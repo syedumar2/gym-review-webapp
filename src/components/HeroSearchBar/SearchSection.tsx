@@ -3,7 +3,7 @@
 import React from "react";
 import { Search } from "lucide-react";
 
-const SearchBar = () => {
+const SearchSection = () => {
   return (
     <form className="w-full max-w-5xl mx-auto bg-accent/10 p-6 rounded-lg">
       {/* Tag buttons */}
@@ -17,7 +17,7 @@ const SearchBar = () => {
             Location
           </button>
           <button className="px-4 py-2 bg-primary dark:bg-secondary-dark/85 text-black rounded-full hover:bg-secondary/80 transition">
-            Type
+            Description
           </button>
         </div>
       </div>
@@ -56,4 +56,4 @@ const SearchBar = () => {
   );
 };
 
-export default SearchBar;
+export default SearchSection;

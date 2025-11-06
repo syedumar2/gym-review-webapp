@@ -1,6 +1,6 @@
 "use client";
 
-import SearchBar from "./SearchBar";
+import SearchSection from "./SearchSection";
 
 const HeroSearchBar = () => {
   return (
@@ -15,7 +15,7 @@ const HeroSearchBar = () => {
         <p className="hero-text">
           Find the best gyms in your city with real reviews from members like you.
         </p>
-       <SearchBar/>
+       <SearchSection/>
       </div>
     </section>
   );

@@ -51,7 +51,6 @@ const GymSubmissionsList = () => {
     gym: GymRequest,
     adminId: string
   ): Promise<ApiResponse<Gym | null>> => {
-    console.log("Approved gym:", gym.gymName);
     return await approveGymRequest(gym, adminId);
   };
   const handleReject = async (
@@ -59,9 +58,7 @@ const GymSubmissionsList = () => {
     adminId: string,
     reason: string
   ): Promise<ApiResponse<GymRequest | null>> => {
-    console.log(
-      `Rejected gym: ${gym.gymName}, Reason: ${reason},AdminId: ${adminId}`
-    );
+ 
 
     return await rejectGymRequest(gym, adminId, reason);
   };
