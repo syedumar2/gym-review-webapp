@@ -1,7 +1,7 @@
-export interface Review {
+export interface DummyReview {
   id: string;          // changed to string to match gym IDs if needed
-  gymId: string; 
-    gymName?: string;       // gym ID to associate review with a gym
+  gymId: string;
+  gymName?: string;       // gym ID to associate review with a gym
   userName: string;
   userAvatar: string;  // URL to avatar image
   rating: number;      // 0-5
@@ -10,10 +10,10 @@ export interface Review {
   images?: string[];   // optional images attached to review
   approved?: boolean;
   likes?: number;
-  dislikes?: number; 
+  dislikes?: number;
 }
 
-export const dummyReviews: Review[] = [
+export const dummyReviews: DummyReview[] = [
   {
     id: "r1",
     gymId: "g1",
@@ -35,7 +35,7 @@ export const dummyReviews: Review[] = [
     rating: 4.2,
     body: "Clean studio, nice yoga classes, but can get crowded in evenings.",
     createdAt: "2025-09-28T14:15:00Z",
-    images:[
+    images: [
       "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRs_W7f7LzDkgRmO2nZVpWw3GgMmzN_r3t79A&s"
 
     ]
@@ -61,9 +61,18 @@ export const dummyReviews: Review[] = [
     rating: 4.3,
     body: "Zen and calm environment. Great for pilates and meditation.",
     createdAt: "2025-09-26T09:45:00Z",
-    images:[
-            "https://powerliftingshop.com/cdn/shop/articles/20231114_162403-scaled.webp?v=1741340142"
+    images: [
+      "https://powerliftingshop.com/cdn/shop/articles/20231114_162403-scaled.webp?v=1741340142"
 
     ]
   },
 ];
+
+export interface ReviewObjectCreationInput {
+  rating: number;
+  title?: string;
+  body: string;
+  userId: string;
+  gymId: number;
+
+}

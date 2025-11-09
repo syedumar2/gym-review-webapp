@@ -11,7 +11,6 @@ import {
   Dumbbell,
   PlusCircle,
 } from "lucide-react";
-import { useSession } from "next-auth/react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { EmptyPage } from "../Error/EmptyPage";
@@ -25,7 +24,6 @@ import {
 } from "../ui/hover-card";
 
 type GymRequestsFetchParams = {
-  userId: string;
   page: number;
   pageSize: number;
   sort?: SortParam[];
@@ -40,7 +38,6 @@ const statusColors = {
 const GymRequests = () => {
   const [requests, setRequests] = useState<GymRequest[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
-  const { data: session } = useSession();
 
   const [sortParams, setSortParams] = useState<SortParam[]>([
     { field: "gymName", order: "asc" }, // default
@@ -71,8 +68,6 @@ const GymRequests = () => {
   async function fetchGymRequests(
     params: GymRequestsFetchParams
   ): Promise<ApiResponse<Page<GymRequest>>> {
-    if (!params.userId) return { success: false, error: "No userId provided" };
-
     const safeSort = (params.sort || [])
       .filter(
         (s) =>
@@ -88,7 +83,6 @@ const GymRequests = () => {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        userId: params.userId,
         page: params.page,
         pageSize: params.pageSize,
         sort: safeSort.length ? safeSort : [{ field: "gymName", order: "asc" }], // default sort
@@ -113,10 +107,8 @@ const GymRequests = () => {
       fetchGymRequests({
         page: currentPage,
         pageSize: 10,
-        userId: session?.user?.id ?? "",
         sort: sortParams,
       }),
-    enabled: !!session?.user?.id,
   });
 
   useEffect(() => {
@@ -294,7 +286,7 @@ const GymRequests = () => {
                           <h4 className="text-sm font-semibold text-yellow flex items-center gap-1">
                             Pending
                           </h4>
-                            <div className="text-sm">
+                          <div className="text-sm">
                             <span className="font-medium text-muted-foreground">
                               Created At:
                             </span>{" "}

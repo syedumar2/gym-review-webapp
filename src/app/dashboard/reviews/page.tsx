@@ -1,10 +1,10 @@
 import { Footer, Header, UserDashboardNav, UserReviews } from "@/components";
 import ServerHeader from "@/components/Header";
 import { myDummyReviews } from "@/components/User/UserReviews";
-import { Review } from "@/types/review";
+import { DummyReview } from "@/types/review";
 
 const page = () => {
-  const reviews: Review[] = myDummyReviews;
+  const reviews: DummyReview[] = myDummyReviews;
   return (
     <>
       <ServerHeader />

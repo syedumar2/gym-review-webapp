@@ -1,5 +1,6 @@
 
 import { FeaturedGyms, Footer, Header, HeroSearchBar, RecentReviews, RequestGymCTA } from "@/components";
+import ServerHeader from "@/components/Header";
 import { dummyGyms } from "@/types/gym";
 import { dummyReviews } from "@/types/review";
 
@@ -9,7 +10,7 @@ export default function Home() {
 
   return (
     <div>
-      <Header />
+      <ServerHeader/>
       <HeroSearchBar />
       <FeaturedGyms listings={featuredGyms} />
       <RecentReviews reviews={recentReviews} />
@@ -18,3 +19,5 @@ export default function Home() {
     </div>
   );
 }
+//TODO (MODERATE): Update the details page to show description
+//TODO(HIGH) : Work on reviews frontend

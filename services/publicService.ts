@@ -1,4 +1,4 @@
-import { $Enums, Gym, Prisma } from "@/generated/prisma/client";
+import { $Enums, Gym, Prisma, Review } from "@/generated/prisma/client";
 import { Page, SearchParam, SortParam } from "@/types/api";
 import prisma from "../lib/prisma";
 
@@ -14,6 +14,16 @@ export type GymFilters = {
     minRating?: number;
     maxRating?: number;
     amenities?: $Enums.Amenity[];
+}
+
+
+
+export type ReviewFilters = {
+    minRating?: number;
+    maxRating?: number;
+    createdBefore: string;
+    createdAfter: string;
+
 }
 
 export const getGymById = async (id: number): Promise<Gym> => {
@@ -118,3 +128,138 @@ export const getAllGyms = async (
         totalElements: totalGyms,
     };
 };
+
+
+type SortDirections = "asc" | "desc" | null;
+type ReviewSortParams = {
+    field: "rating"
+    | "createdAt"
+    | "rating"
+    | "votes";
+    order: SortDirections;
+}
+
+
+type ReviewSearch = {
+    searchText: string;
+}
+
+export const getAllReviews = async (
+    gymId: number,
+    page: number,
+    pageSize: number,
+    search: ReviewSearch,
+    sort: ReviewSortParams[],
+    filters: ReviewFilters,
+): Promise<Page<Review>> => {
+    //gymId check
+    if (!gymId) throw new Error("No gymId passed");
+
+
+    //page validation
+    const MAX_PAGE_SIZE = 50;
+    const safePage = Math.max(1, page);
+    const safePageSize = Math.min(Math.max(1, pageSize), MAX_PAGE_SIZE);
+
+    //search Validation
+    const isValidSearch = Boolean(search?.searchText?.trim());
+
+
+
+    //filter validation
+    const min = filters.minRating ?? 0;
+    const max = filters.maxRating ?? 5;
+    if (min < 0 || min > 5) throw new Error("Invalid min rating");
+    if (max < 0 || max > 5) throw new Error("Invalid max rating");
+    if (min > max) throw new Error("Min rating cannot exceed max rating");
+
+    const start = filters.createdBefore ? new Date(filters.createdBefore) : null;
+    const end = filters.createdAfter ? new Date(filters.createdAfter) : null;
+
+
+    if (start && isNaN(start.getTime())) throw new Error("Invalid start date format");
+    if (end && isNaN(end.getTime())) throw new Error("Invalid end date format");
+    if (start && end && start > end) throw new Error("Start date cannot be later than end date");
+
+
+    //where clause construction
+    const where: Prisma.ReviewWhereInput = {
+        AND: [
+            ...(gymId ? [{ gymId }] : []),
+            ...(filters?.minRating !== undefined && filters?.maxRating !== undefined
+                ? [{
+                    rating: {
+                        ...(filters.minRating !== undefined && { gte: filters.minRating }),
+                        ...(filters.maxRating !== undefined && { lte: filters.maxRating }),
+                    },
+                }]
+                : []),
+            ...(filters.createdAfter !== undefined && filters?.maxRating !== undefined ? [
+                {
+                    createdAt: {
+                        ...(filters.createdBefore !== undefined && { gte: filters.createdBefore }),
+                        ...(filters.createdAfter !== undefined && { lte: filters.createdAfter })
+                    }
+                }
+            ] : [])
+        ],
+        ...(isValidSearch ? {
+            OR: [
+                { title: { contains: search.searchText.trim(), mode: "insensitive" } },
+                { body: { contains: search.searchText.trim(), mode: "insensitive" } },
+            ]
+        } : {}),
+
+    }
+
+
+
+
+
+    //sort validation
+    const safeOrderBy = sort.map((s) => {
+        if (s.field === "votes") {
+            return {
+                votes: {
+                    _count: s.order ?? undefined
+                }
+            };
+        }
+        return { [s.field]: s.order };
+    }) || [];
+
+    if (safeOrderBy.length === 0) safeOrderBy.push({ createdAt: "desc" });
+
+
+    //total reviews calc
+    const totalReviews = await prisma.review.count({ where });
+
+
+    //db call
+    const reviews = await prisma.review.findMany(
+        {
+            skip: (safePage - 1) * safePageSize,
+            take: safePageSize,
+            orderBy: safeOrderBy,
+            where,
+
+        }
+
+    )
+    const totalPages = Math.ceil(totalReviews / safePageSize);
+
+    return {
+        data: reviews,
+        page: safePage,
+        pageSize: safePageSize,
+        totalPages,
+        totalElements: totalReviews,
+    };
+
+
+
+
+
+
+
+}

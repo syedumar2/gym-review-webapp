@@ -1,8 +1,8 @@
-import { Review } from "@/types/review";
+import { DummyReview } from "@/types/review";
 import "./RecentReviews.css";
 import StarRating from "../RatingStars/RatingStars";
 type RecentReviewsProps = {
-  reviews: Review[];
+  reviews: DummyReview[];
 };
 
 const RecentReviews = ({ reviews }: RecentReviewsProps) => {

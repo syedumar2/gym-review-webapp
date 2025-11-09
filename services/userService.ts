@@ -5,11 +5,12 @@
  * This service uses Prisma ORM for database operations.
  */
 
-import { GymRequest, Prisma, User } from "@/generated/prisma/client";
+import { GymRequest, Prisma, Review, ReviewVote, User, VoteType } from "@/generated/prisma/client";
 import { Page, SortParam } from "@/types/api";
 import { GymRequestObjectCreationInput } from "@/types/gym";
 import bcrypt from "bcryptjs";
 import prisma from "../lib/prisma";
+import { ReviewObjectCreationInput } from "@/types/review";
 
 
 
@@ -193,5 +194,159 @@ export const getGymRequests = async (
 export const getGymSubmissionDetailsById = async (id: number) => {
   return prisma.gymRequest.findUnique({ where: { id } })
 }
+
+
+/**
+ * Adds a new review to a gym listing
+ * @param {ReviewObjectCreationInput} data 
+ * @returns {Promise<Review>}
+ */
+export const addReview = async (data: ReviewObjectCreationInput): Promise<Review> => {
+  try {
+    return await prisma.$transaction(async (tx) => {
+      const existingReview = await tx.review.findFirst({
+        where: {
+          userId: data.userId,
+          gymId: data.gymId,
+        },
+      });
+
+      if (existingReview) {
+        throw new Error("You have already submitted a review for this gym.");
+      }
+
+      const newReview = await tx.review.create({
+        data: {
+          rating: data.rating,
+          title: data.title ?? undefined,
+          body: data.body,
+          userId: data.userId,
+          gymId: data.gymId,
+        },
+      });
+
+      const agg = await tx.review.aggregate({
+        where: { gymId: data.gymId },
+        _count: { _all: true },
+        _sum: { rating: true },
+      });
+
+      await tx.gym.update({
+        where: { id: data.gymId },
+        data: {
+          reviewCount: agg._count._all,
+          reviewSum: agg._sum.rating ?? 0,
+          rating: ((agg._sum.rating ?? 0) / (agg._count._all ?? 1)).toFixed(1),
+        }
+      },
+      )
+
+      return newReview;
+    });
+  } catch (err: any) {
+    if (err.code === "P2003") {
+      throw new Error("Invalid user or gym. Please try again.");
+    }
+
+    if (err.message.includes("You have already submitted")) {
+      throw err;
+    }
+
+    throw new Error("Something went wrong while adding your review.");
+  }
+};
+
+/**
+ * Soft Deletes a review on providing userId and reviewId
+ * @param userId 
+ * @param reviewId 
+ * @returns {Promise<Review>}
+ */
+export const deleteReview = async (
+  userId: string,
+  reviewId: number
+): Promise<Review> => {
+
+  try {
+    return await prisma.$transaction(async (tx) => {
+      const existingReview = await tx.review.findFirst({
+        where: {
+          id: reviewId,
+          userId,
+
+        },
+      });
+
+      if (!existingReview) {
+        throw new Error("No such review found!");
+      }
+      return await tx.review.update({
+        where: {
+          id: existingReview.id
+        },
+        data: { isDeleted: true }
+      })
+
+    })
+
+
+  } catch (err: any) {
+
+    if (err.code === "P2003") {
+      throw new Error("Invalid user or review. Please try again.");
+    }
+
+    if (err.message.includes("No such review found")) {
+      throw err;
+    }
+
+    throw new Error("Something went wrong while deleting your review.");
+
+  }
+}
+
+/**
+ * Apply like/dislike to review given the reviewId, userId and vote type
+ * Calling this function again with same vote type will result in deletion of the Vote and return null
+ * @param reviewId 
+ * @param userId 
+ * @param type 
+ * @returns { Promise<ReviewVote|null>}
+ */
+export const applyOrRemoveReviewVote = async (
+  reviewId: number,
+  userId: string,
+  type: VoteType
+): Promise<ReviewVote | null> => {
+  try {
+    return await prisma.$transaction(async (tx) => {
+      const existingVote = await tx.reviewVote.findFirst({
+        where: { reviewId, userId }
+      });
+
+      if (!existingVote) {
+        return tx.reviewVote.create({
+          data: { reviewId, userId, type }
+        });
+      }
+
+      if (existingVote.type === type) {
+        await tx.reviewVote.delete({
+          where: { id: existingVote.id }
+        });
+        return null;
+      }
+
+      return tx.reviewVote.update({
+        where: { id: existingVote.id },
+        data: { type }
+      });
+    });
+  } catch (err: any) {
+    console.error(err);
+    throw new Error("Something went wrong.", err?.message);
+  }
+};
+
 
 

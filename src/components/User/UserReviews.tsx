@@ -1,10 +1,10 @@
-import { Review } from "@/types/review";
+import { DummyReview } from "@/types/review";
 import StarRating from "../RatingStars/RatingStars";
 import { Button } from "../ui/button";
 import { Edit, Trash } from "lucide-react";
 import PaginationStatic from "../Pagination/PaginationStatic";
 
-export const myDummyReviews: Review[] = [
+export const myDummyReviews: DummyReview[] = [
   {
     id: "r1",
     gymId: "g1",
@@ -41,7 +41,7 @@ export const myDummyReviews: Review[] = [
 ];
 
 type MyReviewsProps = {
-  reviews: Review[];
+  reviews: DummyReview[];
 };
 
 export const UserReviews = ({ reviews }: MyReviewsProps) => {

@@ -19,10 +19,10 @@ import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import Pagination from "@/components/Pagination/Pagination";
-import { Review } from "@/types/review";
+import { DummyReview } from "@/types/review";
 
 // Mock Reported Reviews
-const mockReportedReviews: Review[] = [
+const mockReportedReviews: DummyReview[] = [
   {
     id: "r1",
     gymId: "g1",

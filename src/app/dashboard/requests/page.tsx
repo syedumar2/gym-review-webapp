@@ -13,4 +13,3 @@ const page = () => {
 }
 
 export default page
-//TODO (HIGH):  HomePage SearchBar coming soon

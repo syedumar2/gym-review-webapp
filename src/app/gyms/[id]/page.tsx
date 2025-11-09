@@ -4,14 +4,11 @@ import { AlertCircle } from "lucide-react";
 import { publicService } from "../../../../services";
 import GymDetails, { ParsedGym } from "@/components/GymDetails/GymDetails";
 
-
-
-
-
 const page = async ({ params }: { params: { id: string } }) => {
-    const resp = await publicService.getGymById(Number(params.id));
+  const id = await Number(params.id);
+  const resp = await publicService.getGymById(id);
 
-     if (!resp) {
+  if (!resp) {
     return (
       <>
         <ServerHeader />
@@ -24,7 +21,7 @@ const page = async ({ params }: { params: { id: string } }) => {
       </>
     );
   }
-   return (
+  return (
     <>
       <ServerHeader />
       <GymDetails gym={resp as ParsedGym} />

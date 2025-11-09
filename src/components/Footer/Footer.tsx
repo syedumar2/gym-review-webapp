@@ -25,7 +25,7 @@ export const Footer = () => {
                 </a>
               </li>
               <li>
-                <a href="/gyms" className="hover:text-secondary">
+                <a href="/listings" className="hover:text-secondary">
                   All Gyms
                 </a>
               </li>
@@ -83,3 +83,4 @@ export const Footer = () => {
   );
 };
 
+//TODO (LOW): Update the footer links

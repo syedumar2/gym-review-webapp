@@ -2,9 +2,15 @@ import { NextRequest, NextResponse } from "next/server";
 
 import { ApiResponse } from "@/types/api";
 import { adminService } from "../../../../../services";
+import { auth } from "../../../../../auth";
 
 export async function POST(req: NextRequest) {
     try {
+        const session = await auth();
+
+        if (!session?.user)
+            return Response.json({ error: "Unauthorized" }, { status: 401 });
+
         const body = await req.json();
         const {
             page = 1,
