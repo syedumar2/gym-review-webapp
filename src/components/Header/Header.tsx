@@ -13,13 +13,18 @@ const Navbar = ({ session }: NavbarProps) => {
   const pathname = usePathname();
   return (
     <header>
-      {pathname?.includes("/listings") ||
-      pathname?.includes("/details") ||
-      pathname?.includes("/dashboard") ||
-      pathname?.includes("/admin")  ? (
-        <ListingPageNav isOpen={isOpen} setIsOpen={setIsOpen} session={session} />
+      {pathname === "/" ? (
+        <LandingPageNav
+          isOpen={isOpen}
+          setIsOpen={setIsOpen}
+          session={session}
+        />
       ) : (
-        <LandingPageNav isOpen={isOpen} setIsOpen={setIsOpen} />
+        <ListingPageNav
+          isOpen={isOpen}
+          setIsOpen={setIsOpen}
+          session={session}
+        />
       )}
     </header>
   );

@@ -110,7 +110,7 @@ const GymListings = ({
           <p className="text-sm font-medium text-gray mt-2">10 reviews</p>
 
           <a
-            href={`/gyms/${gym.id}`}
+            href={`/gyms/${gym.slug}`}
             className="block w-full mt-4 text-center bg-secondary text-white font-medium py-2 px-4 rounded-lg hover:bg-secondary/90 transition"
           >
             View Details

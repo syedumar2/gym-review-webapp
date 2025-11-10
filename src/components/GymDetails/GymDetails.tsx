@@ -1,11 +1,10 @@
 import { Gym } from "@/generated/prisma";
-import PaginationStatic from "../Pagination/PaginationStatic";
 import GymDescription from "./GymDescription";
 import GymDetailsHeader from "./GymDetailsHeader";
+import GymEquipment from "./GymEquipment";
 import GymGallery from "./GymGallery";
 import GymMembershipPlans from "./GymMembershipPlans";
-import GymEquipment from "./GymEquipment";
-import GymReviews from "./GymReviews";
+import GymReviewsSection from "./GymReviewsSection";
 
 export type ParsedGym = Gym & {
   address: {
@@ -41,7 +40,7 @@ export default function GymDetails({ gym }: { gym: ParsedGym }) {
       <GymGallery gym={gym} />
 
       <GymEquipment gym={gym} />
-      <GymReviews gym={gym} />
+      <GymReviewsSection gym={gym} />
     </div>
   );
 }

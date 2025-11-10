@@ -214,16 +214,31 @@ export const addReview = async (data: ReviewObjectCreationInput): Promise<Review
       if (existingReview) {
         throw new Error("You have already submitted a review for this gym.");
       }
-
-      const newReview = await tx.review.create({
+      let newReview;
+      if (data.hasMedia) {
+        newReview = await tx.review.create({
+          data: {
+            rating: data.rating,
+            title: data.title ?? undefined,
+            body: data.body,
+            userId: data.userId,
+            gymId: data.gymId,
+            hasMedia: data.hasMedia,
+            images: data.images
+          },
+        });
+      }
+      newReview = await tx.review.create({
         data: {
           rating: data.rating,
           title: data.title ?? undefined,
           body: data.body,
           userId: data.userId,
           gymId: data.gymId,
+          hasMedia: data.hasMedia,
         },
       });
+
 
       const agg = await tx.review.aggregate({
         where: { gymId: data.gymId },

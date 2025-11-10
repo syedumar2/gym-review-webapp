@@ -1,42 +1,35 @@
-import {  X, Menu } from "lucide-react";
+import { X, Menu } from "lucide-react";
 import { DarkModeToggle } from "../Buttons/DarkModeToggle";
 import Logo from "../Buttons/Logo";
 import { Button } from "../ui/button";
 import { Dispatch, SetStateAction } from "react";
 import Link from "next/link";
+import UserLoggedInClient from "./UserLoggedInClient";
+import LoginOrRegisterButtons from "./LoginOrRegisterButtons";
 
 const LandingPageNav = ({
   isOpen,
   setIsOpen,
+  session,
 }: {
   setIsOpen: Dispatch<SetStateAction<boolean>>;
   isOpen: boolean;
+  session: any;
 }) => {
+  const isLoggedIn = !!session?.user;
   return (
     <nav className="bg-accent">
       <div className="max-w-6xl mx-auto px-4 py-4 flex justify-between items-center">
         {/* Left: Logo / Brand */}
         <div className="flex items-center justify-between gap-6">
           <Logo />
-  
         </div>
 
-        {/* Desktop Right Section */}
-        <div className="hidden md:flex items-center space-x-4">
-          <Link
-            href="/login"
-            className="text-textColor hover:text-secondary text-sm"
-          >
-            Login
-          </Link>
-          <Button
-            variant="secondary"
-            className="  rounded-full px-6 py-2 text-sm font-medium shadow text-white  active:scale-95"
-          >
-            <Link href="/signup">Get Started</Link>
-          </Button>
-          <DarkModeToggle />
-        </div>
+        {isLoggedIn && session?.user ? (
+          <UserLoggedInClient user={session.user} />
+        ) : (
+          <LoginOrRegisterButtons />
+        )}
 
         {/* Mobile Menu Button */}
         <div className="md:hidden">

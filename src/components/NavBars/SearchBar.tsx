@@ -2,7 +2,7 @@
 
 import { cn } from "@/lib/utils";
 import { Search } from "lucide-react";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
 
 type SearchFilters = "gymName" | "city" | "description";
@@ -17,7 +17,6 @@ const SearchBar = () => {
   );
 
   const [isFocused, setIsFocused] = useState(false); // 👈 universal focus state
-  const pathname = usePathname();
   const { replace } = useRouter();
 
   function handleSearch(): void {
@@ -29,7 +28,7 @@ const SearchBar = () => {
       params.delete("search");
       params.delete("by");
     }
-    replace(`${pathname ?? ""}?${params.toString()}`);
+    replace(`${"/listings"}?${params.toString()}`);
   }
 
   return (

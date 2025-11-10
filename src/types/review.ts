@@ -74,5 +74,21 @@ export interface ReviewObjectCreationInput {
   body: string;
   userId: string;
   gymId: number;
+  hasMedia: boolean;
+  images?: string[];
 
+}
+
+export type SortDirections = "asc" | "desc" | null;
+export type ReviewSortParams = {
+    field: "rating"
+    | "createdAt"
+    | "rating"
+    | "votes";
+    order: SortDirections;
+}
+
+
+export type ReviewSearch = {
+    searchText: string;
 }

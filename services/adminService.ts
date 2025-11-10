@@ -47,13 +47,13 @@ export const getAllUsers = async (
 
   const totalPages = Math.ceil(totalUsers / safePageSize);
 
-    return {
-      data: users,
-      page: safePage,
-      pageSize: safePageSize,
-      totalPages,
-      totalElements: totalUsers,
-    };
+  return {
+    data: users,
+    page: safePage,
+    pageSize: safePageSize,
+    totalPages,
+    totalElements: totalUsers,
+  };
 };
 
 
@@ -227,6 +227,8 @@ export const approveGym = async (
     throw new Error("Gym with this name and address already exists!");
   }
 
+  const slug = await generateUniqueSlug(prisma.gym, gymData.gymName);
+
   const newGym = await prisma.$transaction(async (tx) => {
     const gym = await tx.gym.create({
       data: {
@@ -248,6 +250,7 @@ export const approveGym = async (
         miscEquipment: gymData.miscEquipment,
         images: gymData.images as InputJsonValue,
         approvedByAdminId: adminId,
+        slug,
       },
     });
 
@@ -268,3 +271,22 @@ export const approveGym = async (
 };
 
 
+export function slugify(text: string) {
+  return text
+    .toLowerCase()
+    .trim()
+    .replace(/\s+/g, "_")
+    .replace(/[^a-z0-9_]/g, "");
+}
+
+export async function generateUniqueSlug(model: any, name: string) {
+  let base = slugify(name);
+  let slug = base;
+  let count = 1;
+
+  while (await model.findUnique({ where: { slug } })) {
+    slug = `${base}-${count++}`;
+  }
+
+  return slug;
+}

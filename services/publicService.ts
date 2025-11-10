@@ -1,6 +1,7 @@
 import { $Enums, Gym, Prisma, Review } from "@/generated/prisma/client";
 import { Page, SearchParam, SortParam } from "@/types/api";
 import prisma from "../lib/prisma";
+import { ReviewSearch, ReviewSortParams } from "@/types/review";
 
 export type SafeParsedGym = Omit<Gym, "rating"> & {
     rating: number | null;
@@ -29,6 +30,13 @@ export type ReviewFilters = {
 export const getGymById = async (id: number): Promise<Gym> => {
     const gym = await prisma.gym.findFirst({ where: { id } });
     if (!gym) throw new Error(`No gym with id: ${id} found!`);
+    return gym;
+
+}
+
+export const getGymBySlug = async (slug: string): Promise<Gym> => {
+    const gym = await prisma.gym.findFirst({ where: { slug } });
+    if (!gym) throw new Error(`No gym with slug: ${slug} found!`);
     return gym;
 
 }
@@ -130,27 +138,15 @@ export const getAllGyms = async (
 };
 
 
-type SortDirections = "asc" | "desc" | null;
-type ReviewSortParams = {
-    field: "rating"
-    | "createdAt"
-    | "rating"
-    | "votes";
-    order: SortDirections;
-}
 
-
-type ReviewSearch = {
-    searchText: string;
-}
 
 export const getAllReviews = async (
     gymId: number,
     page: number,
     pageSize: number,
-    search: ReviewSearch,
-    sort: ReviewSortParams[],
-    filters: ReviewFilters,
+    search?: ReviewSearch,
+    sort?: ReviewSortParams[],
+    filters?: ReviewFilters,
 ): Promise<Page<Review>> => {
     //gymId check
     if (!gymId) throw new Error("No gymId passed");
@@ -167,19 +163,22 @@ export const getAllReviews = async (
 
 
     //filter validation
-    const min = filters.minRating ?? 0;
-    const max = filters.maxRating ?? 5;
-    if (min < 0 || min > 5) throw new Error("Invalid min rating");
-    if (max < 0 || max > 5) throw new Error("Invalid max rating");
-    if (min > max) throw new Error("Min rating cannot exceed max rating");
+    if (filters) {
+        const min = filters.minRating ?? 0;
+        const max = filters.maxRating ?? 5;
+        if (min < 0 || min > 5) throw new Error("Invalid min rating");
+        if (max < 0 || max > 5) throw new Error("Invalid max rating");
+        if (min > max) throw new Error("Min rating cannot exceed max rating");
 
-    const start = filters.createdBefore ? new Date(filters.createdBefore) : null;
-    const end = filters.createdAfter ? new Date(filters.createdAfter) : null;
+        const start = filters.createdBefore ? new Date(filters.createdBefore) : null;
+        const end = filters.createdAfter ? new Date(filters.createdAfter) : null;
+
+        if (start && isNaN(start.getTime())) throw new Error("Invalid start date format");
+        if (end && isNaN(end.getTime())) throw new Error("Invalid end date format");
+        if (start && end && start > end) throw new Error("Start date cannot be later than end date");
+    }
 
 
-    if (start && isNaN(start.getTime())) throw new Error("Invalid start date format");
-    if (end && isNaN(end.getTime())) throw new Error("Invalid end date format");
-    if (start && end && start > end) throw new Error("Start date cannot be later than end date");
 
 
     //where clause construction
@@ -194,7 +193,7 @@ export const getAllReviews = async (
                     },
                 }]
                 : []),
-            ...(filters.createdAfter !== undefined && filters?.maxRating !== undefined ? [
+            ...(filters?.createdAfter !== undefined && filters?.maxRating !== undefined ? [
                 {
                     createdAt: {
                         ...(filters.createdBefore !== undefined && { gte: filters.createdBefore }),
@@ -203,10 +202,10 @@ export const getAllReviews = async (
                 }
             ] : [])
         ],
-        ...(isValidSearch ? {
+        ...(isValidSearch && search?.searchText !== undefined ? {
             OR: [
-                { title: { contains: search.searchText.trim(), mode: "insensitive" } },
-                { body: { contains: search.searchText.trim(), mode: "insensitive" } },
+                { title: { contains: search?.searchText.trim(), mode: "insensitive" } },
+                { body: { contains: search?.searchText.trim(), mode: "insensitive" } },
             ]
         } : {}),
 
@@ -217,7 +216,7 @@ export const getAllReviews = async (
 
 
     //sort validation
-    const safeOrderBy = sort.map((s) => {
+    const safeOrderBy = sort?.map((s) => {
         if (s.field === "votes") {
             return {
                 votes: {

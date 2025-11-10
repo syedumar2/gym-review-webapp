@@ -242,30 +242,32 @@ model Gym {
   rating              Decimal               @default(0.0) @db.Decimal(2, 1)
   createdAt           DateTime              @default(now())
   updatedAt           DateTime              @default(now()) @updatedAt
-
+  slug      String?  @unique
   approvedByAdmin User     @relation(fields: [approvedByAdminId], references: [id], onDelete: Cascade)
   review          Review[]
 }
 
 model Review {
-  id           Int      @id @default(autoincrement())
+  id           Int          @id @default(autoincrement())
   rating       Int
   title        String?
   body         String
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @default(now()) @updatedAt
-  isFlagged    Boolean  @default(false)
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @default(now()) @updatedAt
+  isFlagged    Boolean      @default(false)
   reportReason String?
-
-  userId    String
-  gymId     Int
-  votes     ReviewVote[]
-  isDeleted Boolean      @default(false)
-  user      User         @relation(fields: [userId], references: [id])
-  gym       Gym          @relation(fields: [gymId], references: [id])
+  images       Json?
+  hasMedia     Boolean
+  userId       String
+  gymId        Int
+  votes        ReviewVote[]
+  isDeleted    Boolean      @default(false)
+  user         User         @relation(fields: [userId], references: [id])
+  gym          Gym          @relation(fields: [gymId], references: [id])
 
   @@unique([userId, gymId])
 }
+//TODO(MEDIUM): Flesh out the images json
 
 model ReviewVote {
   id        Int      @id @default(autoincrement())

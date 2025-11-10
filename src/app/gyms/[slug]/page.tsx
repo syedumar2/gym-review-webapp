@@ -4,9 +4,9 @@ import { AlertCircle } from "lucide-react";
 import { publicService } from "../../../../services";
 import GymDetails, { ParsedGym } from "@/components/GymDetails/GymDetails";
 
-const page = async ({ params }: { params: { id: string } }) => {
-  const id = await Number(params.id);
-  const resp = await publicService.getGymById(id);
+const page = async ({ params }: { params: { slug: string } }) => {
+  const { slug } = await params;
+  const resp = await publicService.getGymBySlug(slug);
 
   if (!resp) {
     return (

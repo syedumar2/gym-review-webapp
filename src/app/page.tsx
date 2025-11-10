@@ -19,5 +19,3 @@ export default function Home() {
     </div>
   );
 }
-//TODO (MODERATE): Update the details page to show description
-//TODO(HIGH) : Work on reviews frontend

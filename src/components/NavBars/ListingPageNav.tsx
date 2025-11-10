@@ -1,14 +1,14 @@
 "use client";
 
-import { Menu, Search, X } from "lucide-react";
+import { Menu, X } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Dispatch, SetStateAction } from "react";
 import Logo from "../Buttons/Logo";
 import { Button } from "../ui/button";
 import LoginOrRegisterButtons from "./LoginOrRegisterButtons";
-import UserLoggedInClient from "./UserLoggedInClient";
 import SearchBar from "./SearchBar";
+import UserLoggedInClient from "./UserLoggedInClient";
 const ListingPageNav = ({
   isOpen,
   setIsOpen,
@@ -30,15 +30,14 @@ const ListingPageNav = ({
             <SearchBar />
           </div>
           {/* Desktop Buttons */}
-          {pathname?.includes("/dashboard") || pathname?.includes("/admin") ? (
-            isLoggedIn ? (
+          <div className="mr-2">
+            {isLoggedIn && session?.user ? (
               <UserLoggedInClient user={session.user} />
             ) : (
               <LoginOrRegisterButtons />
-            )
-          ) : (
-            <LoginOrRegisterButtons />
-          )}
+            )}
+          </div>
+
           {/* Mobile Menu Button */}
           <div className="md:hidden">
             <button onClick={() => setIsOpen(!isOpen)}>

@@ -5,12 +5,13 @@ const page = async ({
 }: {
   searchParams?: { search?: string; by?: string };
 }) => {
-  const searchText = searchParams?.search || "";
-  const searchBy = searchParams?.by || "gymName";
+  const { search, by } = await searchParams ?? {};
+  const searchText = search || "";
+  const searchBy = by || "gymName";
 
   return (
     <>
-      <GymListingsPage searchText={searchText} searchBy={searchBy}/>
+      <GymListingsPage searchText={searchText} searchBy={searchBy} />
     </>
   );
 };
