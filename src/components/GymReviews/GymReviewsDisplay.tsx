@@ -1,37 +1,27 @@
 import { Page } from "@/types/api";
-import { JsonValue } from "@prisma/client/runtime/library";
-import { EmptyPage } from "../Error/EmptyPage";
-import { AlertCircle, PlusCircle, Trash } from "lucide-react";
-import GymCardAside from "./GymCardAside";
-import { Gym } from "@/generated/prisma";
+import { ReviewWithUserAndVotes } from "@/types/review";
+import { Trash } from "lucide-react";
 import { SafeParsedGym } from "../../../services/publicService";
-import { Button } from "../ui/button";
+import { EmptyPage } from "../Error/EmptyPage";
+import AddReview from "./AddReview";
+import GymCardAside from "./GymCardAside";
 import GymReviewsList from "./GymReviewsList";
 
 type GymReviewsDisplayProps = {
-  reviews: Page<{
-    id: number;
-    images: JsonValue | null;
-    rating: number;
-    createdAt: Date;
-    updatedAt: Date;
-    body: string;
-    title: string | null;
-    isFlagged: boolean;
-    reportReason: string | null;
-    hasMedia: boolean;
-    userId: string;
-    gymId: number;
-    isDeleted: boolean;
-  }>;
-  gym: Gym;
+  reviews: Page<ReviewWithUserAndVotes>;
+  gym: SafeParsedGym;
+  userAlreadyReviewed: boolean;
 };
-const GymReviewsDisplay = ({ reviews, gym }: GymReviewsDisplayProps) => {
+const GymReviewsDisplay = ({
+  reviews,
+  gym,
+  userAlreadyReviewed,
+}: GymReviewsDisplayProps) => {
   if (!reviews || reviews.data.length === 0) {
     return (
       <>
         <section className="flex min-h-screen">
-          <GymCardAside gym={gym as unknown as SafeParsedGym} />{" "}
+          <GymCardAside gym={gym} />{" "}
           <main className="flex-1 p-6 bg-accent">
             <EmptyPage
               heading="Oops, Theres nothing here! "
@@ -39,11 +29,11 @@ const GymReviewsDisplay = ({ reviews, gym }: GymReviewsDisplayProps) => {
               Icon={Trash}
               className="bg-accent"
             />
-            <div className="flex justify-end w-full">
-              <Button variant={"constructive"}>
-                <PlusCircle />
-                Add a Review
-              </Button>
+            <div className="fixed bottom-6 right-6">
+              <AddReview
+                gym={gym}
+                className={userAlreadyReviewed ? "hidden" : ""}
+              />
             </div>
           </main>
         </section>
@@ -54,14 +44,24 @@ const GymReviewsDisplay = ({ reviews, gym }: GymReviewsDisplayProps) => {
     <>
       <section className="flex min-h-screen">
         <GymCardAside gym={gym as unknown as SafeParsedGym} />
-      <GymReviewsList reviews={reviews}/>
+        <main className="flex-1  bg-accent">
+          <div className="bg-primary border-b-black/50 border-b px-6 py-3 w-full shadow-md">
+          <h1 className="text-2xl font-semibold text-shadow-black">Reviews</h1></div>
+          <GymReviewsList reviews={reviews} className="p-6" userAlreadyReviewed={userAlreadyReviewed}/>
+          <div className="fixed bottom-6 right-6">
+            <AddReview
+              gym={gym}
+              className={userAlreadyReviewed ? "hidden" : ""}
+            />
+          </div>
+        </main>
       </section>
     </>
   );
 };
 
 export default GymReviewsDisplay;
-//TODO(HIGH) : Create a function to allow user to add a review. Add options to upload images, rate gym and post review. Keep safeguards to allow one review per user only.
+//TODO(HIGH) : Keep safeguards to allow one review per user only.
 //TODO (MEDIUM) : Allow users to edit/delete reviews. use flags
 //TODO(MEDIUM): Let users and public read,filter,sort and search reviews
-//TODO(MEDIUM): Update surface display reviews to read db 
+//TODO(MEDIUM): Update surface display reviews to read db

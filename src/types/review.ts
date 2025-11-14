@@ -1,3 +1,5 @@
+import { Prisma, Review, VoteType } from "@/generated/prisma";
+
 export interface DummyReview {
   id: string;          // changed to string to match gym IDs if needed
   gymId: string;
@@ -12,6 +14,20 @@ export interface DummyReview {
   likes?: number;
   dislikes?: number;
 }
+
+export type ReviewWithUserAndVotes = Review & {
+  user: {
+    id: string;
+    name: string | null;
+    image: string | null;
+  };
+  votes: {
+    id: number;
+    type: VoteType;
+    userId: string;
+  }[];
+};
+
 
 export const dummyReviews: DummyReview[] = [
   {
@@ -75,20 +91,20 @@ export interface ReviewObjectCreationInput {
   userId: string;
   gymId: number;
   hasMedia: boolean;
-  images?: string[];
+  images?:  Prisma.InputJsonValue;
 
 }
 
 export type SortDirections = "asc" | "desc" | null;
 export type ReviewSortParams = {
-    field: "rating"
-    | "createdAt"
-    | "rating"
-    | "votes";
-    order: SortDirections;
+  field: "rating"
+  | "createdAt"
+  | "rating"
+  | "votes";
+  order: SortDirections;
 }
 
 
 export type ReviewSearch = {
-    searchText: string;
+  searchText: string;
 }

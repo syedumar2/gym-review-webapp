@@ -214,21 +214,7 @@ export const addReview = async (data: ReviewObjectCreationInput): Promise<Review
       if (existingReview) {
         throw new Error("You have already submitted a review for this gym.");
       }
-      let newReview;
-      if (data.hasMedia) {
-        newReview = await tx.review.create({
-          data: {
-            rating: data.rating,
-            title: data.title ?? undefined,
-            body: data.body,
-            userId: data.userId,
-            gymId: data.gymId,
-            hasMedia: data.hasMedia,
-            images: data.images
-          },
-        });
-      }
-      newReview = await tx.review.create({
+      const newReview = await tx.review.create({
         data: {
           rating: data.rating,
           title: data.title ?? undefined,
@@ -236,8 +222,10 @@ export const addReview = async (data: ReviewObjectCreationInput): Promise<Review
           userId: data.userId,
           gymId: data.gymId,
           hasMedia: data.hasMedia,
+          images: data.hasMedia ? data.images : undefined
         },
       });
+
 
 
       const agg = await tx.review.aggregate({
@@ -263,11 +251,14 @@ export const addReview = async (data: ReviewObjectCreationInput): Promise<Review
       throw new Error("Invalid user or gym. Please try again.");
     }
 
+    if (err.code === "P2002") {
+      throw new Error(`Unique constraint failed on: ${err.meta?.target}`);
+    }
     if (err.message.includes("You have already submitted")) {
       throw err;
     }
 
-    throw new Error("Something went wrong while adding your review.");
+    throw new Error(err.code ? `Prisma error: ${err.code}` : err.message);
   }
 };
 

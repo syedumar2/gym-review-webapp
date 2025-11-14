@@ -1,5 +1,5 @@
 "use client";
-import { CldUploadWidget } from "next-cloudinary";
+import { CldUploadWidget, CloudinaryUploadWidgetInfo } from "next-cloudinary";
 import { ImageData } from "@/types/gym";
 import { Dispatch, SetStateAction } from "react";
 
@@ -22,7 +22,7 @@ const GymImageUploadSection = ({
   const handleRemoveImage = async (public_id: string) => {
     try {
       setImages((prev) => prev.filter((img) => img.public_id !== public_id));
-      const response = await deleteImage(public_id);
+      const response = await deleteImage(public_id); //**needs update */
 
       if (!response.success) {
         console.error("Image deletion from cloudinary failed!");
@@ -51,11 +51,12 @@ const GymImageUploadSection = ({
         uploadPreset="gym_review_app"
         onSuccess={(result) => {
           if (result?.info) {
+            const info = result?.info as CloudinaryUploadWidgetInfo;
             setImages((prev) => [
               ...prev,
               {
-                public_id: result.info?.public_id,
-                url: result.info?.secure_url,
+                public_id: info?.public_id,
+                url: info?.secure_url,
               },
             ]);
           }

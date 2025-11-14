@@ -1,10 +1,8 @@
-import {
-  GENDER_SEGREGATION_LABELS,
-  GYM_TYPE_LABELS
-} from "@/types/gym";
+import { GENDER_SEGREGATION_LABELS, GYM_TYPE_LABELS } from "@/types/gym";
 import { Clock, Dumbbell, MapPin, Phone } from "lucide-react";
 import StarRating from "../RatingStars/RatingStars";
 import { ParsedGym } from "./GymDetails";
+import Link from "next/link";
 
 const GymDetailsHeader = ({ gym }: { gym: ParsedGym }) => {
   const formatTime = (time: string) => {
@@ -68,12 +66,16 @@ const GymDetailsHeader = ({ gym }: { gym: ParsedGym }) => {
 
           <div className="flex items-center gap-2">
             <StarRating rating={Number(gym.rating || 0)} />
-            <span className="text-sm text-gray">(No reviews yet)</span>
+            <span className="text-sm text-gray">
+              {gym.reviewCount > 0
+                ? `${gym.reviewCount} review${gym.reviewCount > 1 ? "s" : ""}`
+                : "No Reviews yet"}
+            </span>
           </div>
         </div>
 
         <button className=" bg-secondary text-white px-6 py-2 rounded-lg hover:opacity-90 transition font-medium shadow-md">
-          Post a Review
+          <Link href={`/gyms/${gym.id}/reviews`}>Post a Review</Link>
         </button>
       </section>
     </>

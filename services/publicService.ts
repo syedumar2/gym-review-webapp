@@ -1,11 +1,36 @@
 import { $Enums, Gym, Prisma, Review } from "@/generated/prisma/client";
 import { Page, SearchParam, SortParam } from "@/types/api";
 import prisma from "../lib/prisma";
-import { ReviewSearch, ReviewSortParams } from "@/types/review";
+import { ReviewSearch, ReviewSortParams, ReviewWithUserAndVotes } from "@/types/review";
 
-export type SafeParsedGym = Omit<Gym, "rating"> & {
+
+export type SafeParsedGym = {
+    id: number;
+    approvedByAdminId: string;
+    gymName: string;
+    description: string;
+    address: Prisma.JsonValue;
+    city: string | null;
+    state: string | null;
+    pincode: string | null;
+    gymType: $Enums.GymType;
+    genderSegregation: $Enums.GenderSegregation;
+    phoneNumber: string;
+    timings: Prisma.JsonValue;
+    amenities: $Enums.Amenity[];
+    membershipPlans: Prisma.JsonValue;
+    cardioEquipment: $Enums.CardioEquipment[];
+    strengthEquipment: $Enums.StrengthEquipment[];
+    functionalEquipment: $Enums.FunctionalEquipment[];
+    miscEquipment: $Enums.MiscEquipment[];
+    images: Prisma.JsonValue;
+    reviewCount: number;
+    reviewSum: number;
     rating: number | null;
-};
+    createdAt: Date;
+    updatedAt: Date;
+    slug: string | null;
+}
 
 export type GymFilters = {
     city?: string;
@@ -27,10 +52,12 @@ export type ReviewFilters = {
 
 }
 
-export const getGymById = async (id: number): Promise<Gym> => {
+export const getGymById = async (id: number): Promise<SafeParsedGym> => {
     const gym = await prisma.gym.findFirst({ where: { id } });
     if (!gym) throw new Error(`No gym with id: ${id} found!`);
-    return gym;
+
+
+    return { ...gym, rating: gym.rating ? Number(gym.rating) : null, };
 
 }
 
@@ -122,6 +149,7 @@ export const getAllGyms = async (
         take: safePageSize,
         orderBy: safeOrderBy,
         where,
+
     });
 
     const parsedGyms = gyms.map((g) => ({ ...g, rating: g.rating ? Number(g.rating) : null, }))
@@ -147,7 +175,7 @@ export const getAllReviews = async (
     search?: ReviewSearch,
     sort?: ReviewSortParams[],
     filters?: ReviewFilters,
-): Promise<Page<Review>> => {
+): Promise<Page<ReviewWithUserAndVotes>> => {
     //gymId check
     if (!gymId) throw new Error("No gymId passed");
 
@@ -235,16 +263,29 @@ export const getAllReviews = async (
 
 
     //db call
-    const reviews = await prisma.review.findMany(
-        {
-            skip: (safePage - 1) * safePageSize,
-            take: safePageSize,
-            orderBy: safeOrderBy,
-            where,
+    const reviews = await prisma.review.findMany({
+        skip: (safePage - 1) * safePageSize,
+        take: safePageSize,
+        orderBy: safeOrderBy,
+        where,
+        include: {
+            user: {
+                select: {
+                    id: true,
+                    name: true,
+                    image: true,
+                },
+            },
+            votes: {
+                select: {
+                    id: true,
+                    type: true,
+                    userId: true,
+                },
+            },
+        },
+    });
 
-        }
-
-    )
     const totalPages = Math.ceil(totalReviews / safePageSize);
 
     return {

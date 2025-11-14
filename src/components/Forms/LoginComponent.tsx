@@ -79,7 +79,7 @@ export default function SignInForm() {
       </div>
 
       <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+        <form onSubmit={handleSubmit(onSubmit)}  method="POST" className="space-y-6">
           {/* Email */}
           <div>
             <label

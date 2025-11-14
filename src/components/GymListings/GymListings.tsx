@@ -32,7 +32,6 @@ const GymListings = ({
   searchText: string;
   searchBy: string;
 }) => {
- 
   const { page, setPage } = usePagination(1);
   const { sort, handleSortChange } = useSort([
     { field: "createdAt", order: "desc" },
@@ -107,7 +106,12 @@ const GymListings = ({
             {GENDER_SEGREGATION_LABELS[gym.genderSegregation]}
           </p>
 
-          <p className="text-sm font-medium text-gray mt-2">10 reviews</p>
+          <p className="text-sm font-medium text-gray mt-2">
+            {" "}
+            {gym.reviewCount > 0
+              ? `${gym.reviewCount} review${gym.reviewCount > 1 ? "s" : ""}`
+              : "No Reviews yet"}
+          </p>
 
           <a
             href={`/gyms/${gym.slug}`}

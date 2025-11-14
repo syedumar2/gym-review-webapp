@@ -41,7 +41,7 @@ const GymReviewsSection = ({ gym }: { gym: ParsedGym }) => {
                       <CardHeader className="pb-3">
                         <div className="flex items-start justify-between w-full">
                           <div className="flex items-center gap-3">
-                            <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white font-semibold shadow-md">
+                            <div className="w-10 h-10 rounded-full bg-secondary flex items-center justify-center text-white font-semibold shadow-md">
                               {review.userName.charAt(0).toUpperCase()}
                             </div>
                             <CardTitle className="font-semibold text-lg">
@@ -52,10 +52,10 @@ const GymReviewsSection = ({ gym }: { gym: ParsedGym }) => {
                       </CardHeader>
 
                       <CardContent className="space-y-3">
-                        <p className="text-base font-semibold text-gray-800">
+                        <p className="text-base font-semibold text-black">
                           Sample Title
                         </p>
-                        <p className="text-sm leading-relaxed text-gray-600">
+                        <p className="text-sm leading-relaxed text-gray">
                           {review.body.length > 80
                             ? review.body.slice(0, 80) + "..."
                             : review.body}
@@ -70,11 +70,11 @@ const GymReviewsSection = ({ gym }: { gym: ParsedGym }) => {
                       </CardContent>
 
                       <CardFooter className="flex items-center justify-between border-t border-gray-200 pt-4 mt-4">
-                        <div className="flex items-center gap-2 text-sm font-medium text-gray-700">
+                        <div className="flex items-center gap-2 text-sm font-medium text-gray">
                           Rated <StarRating size={16} rating={review.rating} />
                         </div>
-                        <p className="flex items-center text-sm text-gray-500">
-                          <Dot className="text-gray-400" /> Feb 3, 2007
+                        <p className="flex items-center text-sm text-gray">
+                          <Dot className="text-gray" /> Feb 3, 2007
                         </p>
                       </CardFooter>
                     </Card>
@@ -102,7 +102,7 @@ const GymReviewsSection = ({ gym }: { gym: ParsedGym }) => {
                       <CardHeader className="pb-3">
                         <div className="flex items-start justify-between w-full">
                           <div className="flex items-center gap-3">
-                            <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white font-semibold shadow-md">
+                            <div className="w-10 h-10 rounded-full bg-secondary flex items-center justify-center text-white font-semibold shadow-md">
                               {review.userName.charAt(0).toUpperCase()}
                             </div>
                             <CardTitle className="font-semibold text-lg">
@@ -113,10 +113,10 @@ const GymReviewsSection = ({ gym }: { gym: ParsedGym }) => {
                       </CardHeader>
 
                       <CardContent className="space-y-3">
-                        <p className="text-base font-semibold text-gray-800">
+                        <p className="text-base font-semibold text-black">
                           Sample Title
                         </p>
-                        <p className="text-sm leading-relaxed text-gray-600">
+                        <p className="text-sm leading-relaxed text-gray">
                           {review.body.length > 80
                             ? review.body.slice(0, 80) + "..."
                             : review.body}
@@ -131,11 +131,11 @@ const GymReviewsSection = ({ gym }: { gym: ParsedGym }) => {
                       </CardContent>
 
                       <CardFooter className="flex items-center justify-between border-t border-gray-200 pt-4 mt-4">
-                        <div className="flex items-center gap-2 text-sm font-medium text-gray-700">
+                        <div className="flex items-center gap-2 text-sm font-medium text-gray">
                           Rated <StarRating size={16} rating={review.rating} />
                         </div>
-                        <p className="flex items-center text-sm text-gray-500">
-                          <Dot className="text-gray-400" /> Feb 3, 2007
+                        <p className="flex items-center text-sm text-gray">
+                          <Dot className="text-gray" /> Feb 3, 2007
                         </p>
                       </CardFooter>
                     </Card>
