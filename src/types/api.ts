@@ -14,4 +14,6 @@ export type Page<T = any> = {
   pageSize: number;
   totalPages: number;
   totalElements: number;
+  hasMore?: boolean;
+  nextPage?: number | null;
 };

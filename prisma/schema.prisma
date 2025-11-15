@@ -267,7 +267,6 @@ model Review {
 
   @@unique([userId, gymId])
 }
-//TODO(MEDIUM): Flesh out the images json
 
 model ReviewVote {
   id        Int      @id @default(autoincrement())

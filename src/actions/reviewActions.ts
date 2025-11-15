@@ -7,7 +7,6 @@ import { userService } from "../../services"
 
 export async function submitReview(params: ReviewObjectCreationInput): Promise<ApiResponse<Review | null>> {
     try {
-        console.log("params are",params)
         const createdGymReview = await userService.addReview(params);
       
         return {

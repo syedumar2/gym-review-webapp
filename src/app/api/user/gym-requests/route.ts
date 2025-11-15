@@ -24,7 +24,7 @@ export async function POST(req: NextRequest) {
     } = body;
 
 
-    //TODO(MEDIUM): Update all authenticated actions to check for session on the api side instead of sending userId from client
+    //TODO REFACTOR(MEDIUM): Update all authenticated actions to check for session on the api side instead of sending userId from client
     const result = await userService.getGymRequests(userId, page, pageSize, sort);
 
     const response: ApiResponse<typeof result> = {

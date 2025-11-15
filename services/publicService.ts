@@ -47,8 +47,8 @@ export type GymFilters = {
 export type ReviewFilters = {
     minRating?: number;
     maxRating?: number;
-    createdBefore: string;
-    createdAfter: string;
+    createdBefore?: string;
+    createdAfter?: string;
 
 }
 
@@ -261,10 +261,12 @@ export const getAllReviews = async (
     //total reviews calc
     const totalReviews = await prisma.review.count({ where });
 
+    const skip = (safePage - 1) * safePageSize;
+
 
     //db call
     const reviews = await prisma.review.findMany({
-        skip: (safePage - 1) * safePageSize,
+        skip,
         take: safePageSize,
         orderBy: safeOrderBy,
         where,
@@ -286,6 +288,9 @@ export const getAllReviews = async (
         },
     });
 
+    const hasMore = skip + reviews.length < totalReviews;
+    const nextPage = hasMore ? safePage + 1 : null;
+
     const totalPages = Math.ceil(totalReviews / safePageSize);
 
     return {
@@ -294,6 +299,10 @@ export const getAllReviews = async (
         pageSize: safePageSize,
         totalPages,
         totalElements: totalReviews,
+        hasMore,
+        nextPage,
+
+
     };
 
 
