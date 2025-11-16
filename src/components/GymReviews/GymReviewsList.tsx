@@ -14,10 +14,9 @@ import {
   CardHeader,
   CardTitle,
 } from "../ui/card";
-import { Skeleton } from "../ui/skeleton";
 
 type GymReviewsListProps = {
-  reviews: InfiniteData<ApiResponse<Page<ReviewWithUserAndVotes>>, unknown>;
+  reviews: InfiniteData<ApiResponse<Page<ReviewWithUserAndVotes>>| undefined, unknown>;
   className?: string;
 };
 
@@ -28,7 +27,7 @@ const GymReviewsList = forwardRef<HTMLDivElement, GymReviewsListProps>(
       <div className={cn("flex flex-col gap-3", className)}>
         {reviews.pages.map((group, i) => (
           <React.Fragment key={i}>
-            {group.data?.data.map((review) => (
+            {group?.data?.data.map((review) => (
               <Card
                 className={cn(
                   "bg-primary/50 shadow-lg hover:shadow-xl transition-shadow duration-300 border-2 border-gray-200 h-full  ",
@@ -45,7 +44,7 @@ const GymReviewsList = forwardRef<HTMLDivElement, GymReviewsListProps>(
                       <CardTitle className="font-semibold text-lg">
                         {review.user.name}
                       </CardTitle>
-                    </div>
+                    </div>  
                   </div>
                 </CardHeader>
                 <CardContent className="space-y-3">

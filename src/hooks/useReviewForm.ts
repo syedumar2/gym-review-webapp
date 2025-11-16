@@ -6,9 +6,11 @@ import { toast } from "sonner";
 import { Prisma } from "@/generated/prisma";
 import { submitReview } from "@/actions/reviewActions";
 import { ReviewFormSchema, ReviewFormInput } from "@/schemas/ReviewFormSchema";
+import { useQueryClient } from "@tanstack/react-query";
 
 export function useReviewForm(gymId: number, userId?: string, onSuccess?: () => void) {
   const [loading, setLoading] = useState(false);
+  const queryClient = useQueryClient();
 
   const form = useForm<ReviewFormInput>({
     mode: "onTouched",
@@ -43,6 +45,7 @@ export function useReviewForm(gymId: number, userId?: string, onSuccess?: () => 
       }
 
       toast.success(res.message || "Review submitted!");
+      queryClient.invalidateQueries({ queryKey: ["reviews"], refetchType: "active" });
       form.reset();
       if (onSuccess) onSuccess();
     } catch (err: any) {

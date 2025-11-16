@@ -20,6 +20,7 @@ import GymReviewsList from "./GymReviewsList";
 import ReviewFilterMenu from "./ReviewFilterMenu";
 import { useInView } from "react-intersection-observer";
 import GymReviewsSkeleton from "./GymReviewsSkeleton";
+import { useInfiniteReviews } from "@/hooks/useInfiniteReviews";
 
 type GymReviewsDisplayProps = {
   reviews: ApiResponse<Page<ReviewWithUserAndVotes>>;
@@ -56,82 +57,21 @@ const GymReviewsDisplay = ({
     setFilters(filter);
   };
 
-  async function fetchReviews(
-    params: ReviewsFetchParams
-  ): Promise<ApiResponse<Page<ReviewWithUserAndVotes>>> {
-    console.log("SO the params passed are: ", params.page);
-    const safeSort = (params.sort || [])
-      .filter(
-        (s) =>
-          typeof s.field === "string" &&
-          (s.order === "asc" || s.order === "desc")
-      )
-      .map((s) => ({
-        field: s.field.trim(),
-        order: s.order,
-      }));
-    const resp = await fetch(`/api/public/gyms/reviews`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        gymId: params.gymId,
-        page: params.page,
-        pageSize: params.pageSize,
-        search: params.search ?? undefined,
-        filters: params.filters ?? undefined,
-        sort: safeSort.length
-          ? safeSort
-          : [{ field: "createdAt", order: "asc" }], // default sort
-      }),
-    });
-    const result = await resp.json();
-
-
-    if (result?.data?.data) {
-      result.data.data = result.data.data.map((req: any) => ({
-        ...req,
-        createdAt: new Date(req.createdAt),
-      }));
-    }
-
-    return result;
-  }
-
-  const {
-    data,
-    error,
-    fetchNextPage,
-    hasNextPage,
-    isFetching,
-    isFetchingNextPage,
-
-    status,
-  } = useInfiniteQuery({
-    queryKey: ["reviews", sort, filters],
-    queryFn: ({ pageParam }) =>
-      fetchReviews({
-        gymId: gym.id,
-        page: pageParam,
-        pageSize: 2,
-        filters,
-        sort: sort as ReviewSortParams[],
-      }),
-    placeholderData: {
-      pages: [reviews],
-      pageParams: [1],
-    },
-    staleTime: 60_000, // cache for 1 minute
-    initialPageParam: 1,
-    getNextPageParam: (lastPage) =>
-      lastPage.data?.hasMore ? lastPage.data.nextPage : undefined,
-  });
+  const { data, error, fetchNextPage, status, isFetchingNextPage } =
+    useInfiniteReviews(
+      gym.id,
+      5,
+      sort as unknown as ReviewSortParams[],
+      filters,
+      reviews,
+      undefined
+    );
 
   const { ref, inView } = useInView();
 
   useEffect(() => {
     if (inView) {
       fetchNextPage();
-      console.log("I was triggered");
     }
   }, [fetchNextPage, inView]);
 
@@ -211,6 +151,7 @@ const GymReviewsDisplay = ({
 
 export default GymReviewsDisplay;
 
+//TODO(HIGH) : Implement review seach functionality
 //TODO (MEDIUM) : Allow users to edit/delete reviews.
 //TODO(MEDIUM): Then implement like and dislike functionality
 //TODO(MEDIUM): Update surface display reviews to read db

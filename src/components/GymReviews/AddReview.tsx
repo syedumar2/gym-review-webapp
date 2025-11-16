@@ -32,14 +32,16 @@ const AddReview = ({ gym, className }: AddReviewProps) => {
   const { images, setImages, removeImage } = useImageManager();
   const { control, handleSubmit, onSubmit, reset, formState, loading } =
     useReviewForm(gym.id, session?.user.id, () => {
-      setOpen(false); 
+      setOpen(false);
       reset();
       setRating(0);
       setImages([]);
+      setHidden(true);
     });
 
   const [open, setOpen] = useState(false);
   const [rating, setRating] = useState(0);
+  const [hidden, setHidden] = useState(false);
 
   const handleManualSubmit = () =>
     handleSubmit((data) => onSubmit(data, rating, images))();
@@ -62,7 +64,7 @@ const AddReview = ({ gym, className }: AddReviewProps) => {
           <Button
             variant="constructive"
             onClick={() => !session && signIn()}
-            disabled={loading}
+            disabled={loading || hidden}
             className={cn("", className)}
           >
             <PlusCircle /> Add a Review
