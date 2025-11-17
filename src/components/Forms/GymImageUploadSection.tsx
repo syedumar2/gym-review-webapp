@@ -22,7 +22,7 @@ const GymImageUploadSection = ({
   const handleRemoveImage = async (public_id: string) => {
     try {
       setImages((prev) => prev.filter((img) => img.public_id !== public_id));
-      const response = await deleteImage(public_id); //**needs update */
+      const response = await deleteImage({ public_id }); //**needs update */
 
       if (!response.success) {
         console.error("Image deletion from cloudinary failed!");

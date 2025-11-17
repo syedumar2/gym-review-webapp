@@ -15,6 +15,10 @@ export function useReviewForm(gymId: number, userId?: string, onSuccess?: () => 
   const form = useForm<ReviewFormInput>({
     mode: "onTouched",
     resolver: zodResolver(ReviewFormSchema) as Resolver<ReviewFormInput>,
+    defaultValues: {
+      body: "",
+      title: "",
+    }
   });
 
   const onSubmit = async (

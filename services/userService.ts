@@ -274,6 +274,7 @@ export const deleteReview = async (
 ): Promise<Review> => {
 
   try {
+
     return await prisma.$transaction(async (tx) => {
       const existingReview = await tx.review.findFirst({
         where: {
@@ -286,11 +287,10 @@ export const deleteReview = async (
       if (!existingReview) {
         throw new Error("No such review found!");
       }
-      return await tx.review.update({
+      return await tx.review.delete({
         where: {
           id: existingReview.id
         },
-        data: { isDeleted: true }
       })
 
     })
@@ -356,3 +356,36 @@ export const applyOrRemoveReviewVote = async (
 
 
 
+export const editReview = async (reviewId: number, userId: string, data: ReviewObjectCreationInput): Promise<Review> => {
+  try {
+    return await prisma.$transaction(async (tx) => {
+      const existingReview = await tx.review.findUnique({ where: { id: reviewId } });
+      if (userId !== existingReview?.userId) throw new Error("Review does not belong to User");
+
+      const updatedReview = await tx.review.update({
+        where: { id: reviewId }, data: {
+          rating: data.rating,
+          title: data.title ?? undefined,
+          body: data.body,
+          userId: data.userId,
+          gymId: data.gymId,
+          hasMedia: data.hasMedia,
+          images: data.images
+
+        }
+      });
+      return updatedReview;
+
+    })
+  } catch (err: any) {
+
+
+    if (err.message.includes("No such review found") || err.message.includes("Review does not belong to User")) {
+      throw err;
+    }
+
+    throw new Error("Something went wrong while editing your review.");
+
+  }
+
+}

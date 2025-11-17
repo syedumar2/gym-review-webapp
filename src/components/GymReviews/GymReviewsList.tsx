@@ -14,9 +14,14 @@ import {
   CardHeader,
   CardTitle,
 } from "../ui/card";
+import DeleteReview from "./DeleteReview";
+import EditReview from "./EditReview";
 
 type GymReviewsListProps = {
-  reviews: InfiniteData<ApiResponse<Page<ReviewWithUserAndVotes>>| undefined, unknown>;
+  reviews: InfiniteData<
+    ApiResponse<Page<ReviewWithUserAndVotes>> | undefined,
+    unknown
+  >;
   className?: string;
 };
 
@@ -30,12 +35,12 @@ const GymReviewsList = forwardRef<HTMLDivElement, GymReviewsListProps>(
             {group?.data?.data.map((review) => (
               <Card
                 className={cn(
-                  "bg-primary/50 shadow-lg hover:shadow-xl transition-shadow duration-300 border-2 border-gray-200 h-full  ",
+                  "relative bg-primary/50 shadow-lg hover:shadow-xl transition-shadow duration-300 border-2 border-gray-200 h-full  ",
                   { "border-secondary": review.userId === session?.user?.id }
                 )}
                 key={review.id}
               >
-                <CardHeader className="">
+                <CardHeader className="relative">
                   <div className="flex items-start justify-between w-full">
                     <div className="flex items-center gap-3">
                       <div className="w-10 h-10 rounded-full bg-secondary flex items-center justify-center text-white font-semibold shadow-md">
@@ -44,9 +49,20 @@ const GymReviewsList = forwardRef<HTMLDivElement, GymReviewsListProps>(
                       <CardTitle className="font-semibold text-lg">
                         {review.user.name}
                       </CardTitle>
-                    </div>  
+                    </div>
                   </div>
                 </CardHeader>
+                <div
+                  className={
+                    review.userId === session?.user?.id
+                      ? "absolute top-4 right-4 flex gap-2"
+                      : "hidden"
+                  }
+                >
+                  <EditReview review={review} />
+                  <DeleteReview review={review} />
+                </div>
+
                 <CardContent className="space-y-3">
                   <p
                     className={
@@ -77,7 +93,10 @@ const GymReviewsList = forwardRef<HTMLDivElement, GymReviewsListProps>(
                 </CardContent>
                 <CardFooter className="flex items-center justify-between border-t border-gray-200 pt-4 mt-4">
                   <div className="flex items-center gap-2 text-sm font-medium text-gray">
-                    Rated <StarRating size={16} rating={review.rating} />
+                    Rated <StarRating size={16} rating={review.rating} />{" "}
+                    {+new Date(review.createdAt) !== +new Date(review.updatedAt)
+                      ? "Edited"
+                      : ""}
                   </div>
                   <div className="flex items-center text-sm text-gray">
                     <div className="flex gap-2 items-center text-sm text-gray">
@@ -102,8 +121,7 @@ const GymReviewsList = forwardRef<HTMLDivElement, GymReviewsListProps>(
             ))}
           </React.Fragment>
         ))}
-        <div ref={ref as any} className="">
-        </div>
+        <div ref={ref as any} className=""></div>
       </div>
     );
   }

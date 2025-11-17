@@ -246,6 +246,7 @@ model Gym {
   approvedByAdmin User     @relation(fields: [approvedByAdminId], references: [id], onDelete: Cascade)
   review          Review[]
 }
+//TODO(BUG): Rating is getting rounded to int. Needs fix
 
 model Review {
   id           Int          @id @default(autoincrement())

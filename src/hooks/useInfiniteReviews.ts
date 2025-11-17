@@ -46,6 +46,7 @@ const fetchReviews = async (
         result.data.data = result.data.data.map((req: any) => ({
             ...req,
             createdAt: new Date(req.createdAt),
+            updatedAt: new Date(req.updatedAt)
         }));
     }
 
